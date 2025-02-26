@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.springboot.gacha.mapper.EntryMapper">
+
+    <!-- 📌 회원가입 (user_info 테이블에 사용자 추가) -->
+    <insert id="insertUser" parameterType="com.springboot.gacha.model.UserEntry">
+        INSERT INTO user_info (USER_ID, USER_PWD, NAME, EMAIL, REG_DATE, PROFILE_IMAGE)
+        VALUES (#{userId}, #{userPwd}, #{name}, #{email}, SYSDATE, #{profileImage, jdbcType=VARCHAR})
+    </insert>
+    
+    <!-- 📌 ID 중복 체크 (user_id 존재 여부 확인) -->
+    <select id="checkDupId" parameterType="String" resultType="Integer">
+        SELECT COUNT(*) 
+        FROM user_info 
+        WHERE user_id = #{userId}
+    </select>
+
+</mapper>
