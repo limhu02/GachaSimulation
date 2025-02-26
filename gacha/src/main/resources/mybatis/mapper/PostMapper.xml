@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.springboot.gacha.mapper.PostMapper">
+
+    <!-- 게시글 등록 -->
+    <insert id="insertPost" parameterType="com.springboot.gacha.model.Post">
+        INSERT INTO post (
+            post_id, board_code, writer, title, content, write_date, 
+            imageName, good, bad
+        ) VALUES (
+            (SELECT NVL(MAX(post_id), 0) + 1 FROM post), 
+            #{boardCode}, #{writerId}, #{title}, #{content}, SYSDATE, 
+            #{imageName, jdbcType=VARCHAR}, NVL(#{good}, 0), NVL(#{bad}, 0)
+        )
+    </insert>
+
+    <!-- 게시글 상세 조회 (작성자 정보 포함) -->
+    <select id="getPostById" parameterType="Integer" resultType="com.springboot.gacha.model.Post">
+        SELECT 
+            p.post_id AS postId, p.board_code, 
+            u.user_id AS writerId, 
+            p.title, p.content, 
+            TO_CHAR(p.write_date, 'YYYY-MM-DD HH24:MI:SS') AS writeDate, 
+            p.imageName, p.good, p.bad
+        FROM post p
+        INNER JOIN user_info u ON p.writer = u.user_id  
+        WHERE p.post_id = #{postId}
+    </select>
+    
+     <!-- 📌 게시글 수정 -->
+    <update id="updatePost" parameterType="com.springboot.gacha.model.Post">
+        UPDATE post
+        SET title = #{title}, content = #{content}
+        WHERE post_id = #{postId}
+    </update>
+
+    <!-- 📌 게시글 삭제 -->
+    <delete id="deletePost" parameterType="Integer">
+        DELETE FROM post WHERE post_id = #{postId}
+    </delete>
+</mapper>
