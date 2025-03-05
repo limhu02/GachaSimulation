@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gacha.mapper.BoxMapper">
+
+
+	<select id="getBoxListByGame" resultType="gacha.model.ItemBox" parameterType="String">
+	select code, name, game, price from item_box where game=#{game}
+	</select>
+	<select id="getGameList" resultType="String">
+	select distinct game from item_box
+	</select>
+
+	<select id="getBoxList" resultType="gacha.model.ItemBox">
+	select code,name,game,price from item_box
+	</select> 
+	
+	<select id="getBoxByCode" resultType="gacha.model.ItemBox" parameterType="String">
+	select code, name, game,price from item_box where code =#{code}
+	</select>
+
+</mapper>
+
+
+
+

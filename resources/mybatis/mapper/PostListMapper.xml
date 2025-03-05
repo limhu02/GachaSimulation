@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gacha.mapper.PostListMapper">
+
+    <!-- 📌 게시글 목록 조회 (페이징 적용) -->
+    <select id="getPostList" parameterType="gacha.model.StartEnd" resultType="gacha.model.PostList">
+        SELECT * FROM (
+            SELECT p.*, ROWNUM rn FROM (
+                SELECT p.post_id AS postId, 
+                       p.title, 
+                       TO_CHAR(p.write_date, 'YYYY-MM-DD HH24:MI:SS') AS writeDate,  
+                       p.board_code, 
+                       b.name AS boardName, 
+                       p.writer AS writerId
+                FROM post p
+                JOIN board b ON p.board_code = b.code
+                JOIN user_info u ON p.writer = u.user_id
+                WHERE p.board_code = #{boardCode}
+                ORDER BY p.post_id DESC
+            ) p WHERE ROWNUM <![CDATA[<=]]> #{end} 
+        ) WHERE rn <![CDATA[>=]]> #{start}  
+    </select>
+
+    <!-- 📌 전체 게시글 개수 조회 -->
+    <select id="getTotalCount" parameterType="Integer" resultType="Integer">
+        SELECT COUNT(*) 
+        FROM post 
+        WHERE board_code = #{boardCode}
+    </select>
+
+    <!-- 📌 게시글 제목 검색 (페이징 적용) -->
+    <select id="searchPostsByTitle" parameterType="gacha.model.StartEnd" resultType="gacha.model.PostList">
+        SELECT * FROM (
+            SELECT A.*, ROWNUM AS rnum FROM (
+                SELECT p.post_id AS postId, 
+                       p.board_code, 
+                       b.name AS boardName, 
+                       u.user_id AS writerId, 
+                       p.title, 
+                       TO_CHAR(p.write_date, 'YYYY-MM-DD HH24:MI:SS') AS writeDate
+                FROM post p
+                JOIN user_info u ON p.writer = u.user_id
+                JOIN board b ON p.board_code = b.code
+                WHERE p.board_code = #{boardCode} 
+                AND LOWER(p.title) LIKE '%' || LOWER(#{searchKeyword}) || '%' 
+                ORDER BY p.post_id DESC
+            ) A WHERE ROWNUM <![CDATA[<=]]> #{end}
+        ) WHERE rnum <![CDATA[>=]]> #{start}
+    </select>
+
+    <!-- 📌 검색된 게시글 개수 조회 -->
+    <select id="getSearchTotalCount" parameterType="gacha.model.StartEnd" resultType="Integer">
+        SELECT COUNT(*) 
+        FROM post
+        WHERE board_code = #{boardCode}
+        AND LOWER(title) LIKE '%' || LOWER(#{searchKeyword}) || '%'
+    </select>
+
+</mapper>
