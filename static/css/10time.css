@@ -1,0 +1,144 @@
+/* ✅ 전체 결과 컨테이너 */
+.result-container {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(150px, 1fr)); /* 한 줄에 5개 */
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ✅ 기본 아이템 박스 스타일 */
+.item-box {
+    border-radius: 10px;
+    border: 2px solid black;
+    padding: 10px;
+    text-align: center;
+    width: 150px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(145deg, #f8e08e, #d6a400);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out;
+}
+
+/* ✅ 아이템 박스 호버 효과 */
+.item-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ✅ 이미지 크기 고정 */
+.item-box img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: white;
+    padding: 5px;
+}
+
+/* ✅ 아이템 번호 스타일 */
+.item-number {
+    font-weight: bold;
+    color: red;
+    font-size: 14px;
+}
+
+/* ✅ 아이템 이름 및 확률 스타일 */
+.item-box p {
+    font-size: 12px;
+    margin: 5px 0;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ✅ 희귀 아이템 (7% 이하 확률, 빨간색) */
+.rare-item {
+    background: linear-gradient(135deg, #ff4444, #ff0000);
+    color: white;
+    box-shadow: 0px 0px 10px rgba(255, 0, 0, 0.8);
+    animation: glow 1.5s infinite alternate;
+}
+
+/* ✅ 희귀 아이템 애니메이션 (빨간색) */
+@keyframes glow {
+    0% { box-shadow: 0px 0px 10px rgba(255, 0, 0, 0.5); }
+    50% { box-shadow: 0px 0px 20px rgba(255, 0, 0, 1); }
+    100% { box-shadow: 0px 0px 10px rgba(255, 0, 0, 0.5); }
+}
+
+/* ✅ 일반 아이템 (10% 이상 확률, 파란색) */
+.high-item {
+    background: linear-gradient(135deg, #66a3ff, #0044cc);
+    color: white;
+    box-shadow: 0px 0px 10px rgba(0, 102, 255, 0.8);
+    animation: glow-blue 1.5s infinite alternate;
+}
+
+/* ✅ 일반 아이템 애니메이션 (파란색) */
+@keyframes glow-blue {
+    0% { box-shadow: 0px 0px 10px rgba(0, 102, 255, 0.5); }
+    50% { box-shadow: 0px 0px 20px rgba(0, 102, 255, 1); }
+    100% { box-shadow: 0px 0px 10px rgba(0, 102, 255, 0.5); }
+}
+
+/* ✅ "뽑기 결과" 제목 (가운데 정렬) */
+.page-title {
+    text-align: center;
+    font-size: 32px; /* ✅ 글씨 크기 증가 */
+    font-weight: 800; /* ✅ 더 굵게 */
+    color: #222; /* ✅ 더 진한 글씨 */
+    margin-top: 30px; /* ✅ 여백 증가 */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* ✅ 테두리 효과로 더 선명하게 */
+}
+
+/* ✅ 버튼 컨테이너 (하단 배치) */
+.result-buttons {
+    text-align: center;
+    margin-top: 30px;
+}
+
+/* ✅ 버튼 공통 스타일 */
+.result-buttons a {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* ✅ 다시 뽑기 버튼 */
+.retry-button {
+    background: linear-gradient(135deg, #ffcc00, #ff6600);
+    color: white;
+    box-shadow: 0px 4px 8px rgba(255, 102, 0, 0.3);
+}
+
+.retry-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 6px 12px rgba(255, 102, 0, 0.5);
+}
+
+/* ✅ 정산하기 버튼 */
+.calculate-button {
+    background: linear-gradient(135deg, #008833, #00ff99);
+    color: white;
+    box-shadow: 0px 4px 8px rgba(0, 255, 153, 0.3);
+}
+
+.calculate-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 6px 12px rgba(0, 255, 153, 0.5);
+}
