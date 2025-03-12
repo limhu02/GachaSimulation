@@ -25,6 +25,7 @@ public class GachaController {
 		List<ItemBox> boxList = this.boxService.getBoxListByGame(game);
 		ModelAndView mav = new ModelAndView("gameselect");
 		mav.addObject("boxList",boxList);
+		mav.addObject("game",game);
 		return mav;
 	}
 	

@@ -18,7 +18,7 @@ public class ItemService {
 	private ItemMapper itemmapper;
 	@Autowired
 	private BoxService boxService;
-	
+		
 	public void updateItem (Item item) { 
 		double probability = item.getProbability()*0.01; //%를 소수점으로 초기화해서 재입력, 데이터베이스에 저장예정
 		item.setProbability(probability);//입력한 아이템 객체 값에 할당
