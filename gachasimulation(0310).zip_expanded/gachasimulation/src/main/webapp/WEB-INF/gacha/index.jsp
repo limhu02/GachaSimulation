@@ -27,7 +27,7 @@
             <c:choose>
                 <c:when test="${sessionScope.user_id == null}">
                     <a href="/login/login.html" class="auth-btn">로그인/회원가입</a>
-                </c:when>
+                </c:when>	
                 <c:otherwise>
                     <span>${sessionScope.user_id}님</span>
                     <a href="/login/logout.html" class="logout-btn">로그아웃</a>

@@ -28,13 +28,14 @@
             color: #333;
             margin-bottom: 20px;
         }
-.header {
+.simulation-header {
     display: flex;
     align-items: center;
     justify-content: space-between; /* 좌우 끝으로 정렬 */
     padding: 20px 40px;
     background-color: #fff;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
 .title2 {
@@ -42,7 +43,6 @@
     font-weight: bold;
     color: #333;
 }
-
 .info-button {
     margin-left: auto; /* 자동으로 오른쪽 정렬 */
     padding: 12px 24px;
@@ -123,14 +123,7 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="title2">${game}</div>
-        <a href="${pageContext.request.contextPath}/item/itemList.html">
-            <button class="info-button">전체 아이템 정보 확인하기</button>
-        </a>
-    
-</div>
+  
     <!-- Main content -->
     <div class="container">
         <h1 class="title">🎮 게임을 선택하세요!</h1>
@@ -154,6 +147,9 @@
                 </a>
             </c:forEach>
         </div>
-    </div>
+       <a href="${pageContext.request.contextPath}/item/itemList.html">
+            <button class="info-button">전체 아이템 정보 확인하기</button>
+        </a> 
+    </div>	
 </body>
 </html>
