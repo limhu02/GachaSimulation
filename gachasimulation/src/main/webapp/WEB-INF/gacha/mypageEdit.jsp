@@ -98,7 +98,7 @@
     <!-- 프로필 이미지 -->
     <div class="profile-image-container">
         <img src="${pageContext.request.contextPath}/upload/${userInfo.profile_image}" 
-             alt="프로필 이미지" class="profile-image">
+             alt="기본 프로필" class="profile-image">
     </div>
 
     <!-- 마이페이지 수정 폼 -->

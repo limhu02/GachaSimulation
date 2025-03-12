@@ -18,7 +18,7 @@
                 <li><a href="/board/priceList.html">자랑 게시판</a></li>
                 <li><a href="/board/failList.html">폭망 게시판</a></li>
                 <li><a href="/board/requestList.html">요청/질문 게시판</a></li>
-                <li><a href="/board/simulation">시뮬레이션</a></li>
+                <li><a href="/board/simulation.html">시뮬레이션</a></li>
                 <li><a href="/board/mypage.html">마이페이지</a></li>
             </ul>
         </nav>
@@ -27,7 +27,7 @@
             <c:choose>
                 <c:when test="${sessionScope.user_id == null}">
                     <a href="/login/login.html" class="auth-btn">로그인/회원가입</a>
-                </c:when>
+                </c:when>	
                 <c:otherwise>
                     <span>${sessionScope.user_id}님</span>
                     <a href="/login/logout.html" class="logout-btn">로그아웃</a>

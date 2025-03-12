@@ -99,7 +99,6 @@
                 <option value="1">자랑 게시판</option>
                 <option value="2">폭망 게시판</option>
                 <option value="3">요청/질문 게시판</option>
-                <option value="4">시뮬레이션 게시판</option>
             </select>
         </div>
 

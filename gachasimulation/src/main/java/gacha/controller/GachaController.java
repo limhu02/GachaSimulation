@@ -10,7 +10,6 @@ import org.springframework.web.servlet.ModelAndView;
 import gacha.model.Item;
 import gacha.model.ItemBox;
 import gacha.model.Result;
-import gacha.model.User;
 import gacha.service.BoxService;
 import gacha.service.ItemService;
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +25,7 @@ public class GachaController {
 		List<ItemBox> boxList = this.boxService.getBoxListByGame(game);
 		ModelAndView mav = new ModelAndView("gameselect");
 		mav.addObject("boxList",boxList);
+		mav.addObject("game",game);
 		return mav;
 	}
 	

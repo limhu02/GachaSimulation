@@ -36,7 +36,10 @@
 </div>
 <script type="text/javascript">
 function check(){
-	if( ! confirm("정말로 삭제하시겠습니까?")) return false;
+	if( ! confirm("정말로 삭제하시겠습니까?")) {
+		return false;
+	}
+	return true;
 }
 </script>
 </body>

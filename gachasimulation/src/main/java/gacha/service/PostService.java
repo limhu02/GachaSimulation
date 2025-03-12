@@ -15,7 +15,13 @@ public class PostService {
 
     @Autowired
     private PostMapper postMapper;
-
+    /**
+     * 📌 작성자로 게시글 삭제
+     *
+     */
+    public void deletePostByWriter(String writer) {
+      	this.postMapper.deletePostByWriter(writer);;
+    }
     /**
      * 📌 게시글 저장
      * - 새 게시글을 데이터베이스에 저장

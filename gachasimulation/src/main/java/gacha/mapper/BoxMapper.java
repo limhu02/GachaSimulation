@@ -9,6 +9,7 @@ import gacha.model.ItemBox;
 
 @Mapper
 public interface BoxMapper {
+	void putBox(ItemBox box);
 	List<String> getGameList();
 	List<ItemBox> getBoxList();
 	ItemBox getBoxByCode(String code);

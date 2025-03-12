@@ -13,6 +13,9 @@ public class BoxService {
 	@Autowired
 	private BoxMapper boxMapper;
 
+	public void putBox(ItemBox box) {
+		this.boxMapper.putBox(box);
+	}
 	public List<ItemBox> getBoxListByGame(String game){
 		return this.boxMapper.getBoxListByGame(game);
 	}

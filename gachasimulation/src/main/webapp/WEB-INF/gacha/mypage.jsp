@@ -9,7 +9,7 @@
     <style>
         /* 📌 마이페이지 개별 스타일 (index 스타일과 충돌 방지) */
 body {
-    background-color: #f0f2f5; /* ✅ 배경색 추가 */
+    background-color: #ffffff; /* ✅ 배경색 추가 */
     margin: 0;
     padding: 0;
 }
