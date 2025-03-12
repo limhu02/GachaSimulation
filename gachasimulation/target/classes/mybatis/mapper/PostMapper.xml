@@ -39,4 +39,9 @@
     <delete id="deletePost" parameterType="Integer">
         DELETE FROM post WHERE post_id = #{postId}
     </delete>
+    
+    <!-- 📌 작성자로 게시글 삭제 -->
+    <delete id="deletePostByWriter" parameterType="String">
+        DELETE FROM post WHERE writer = #{writer}
+    </delete>
 </mapper>

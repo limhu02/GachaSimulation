@@ -12,6 +12,7 @@
 	<delete id="deleteCommentaryByCode" parameterType="Integer">
 		delete from commentary where code=${code}
 	</delete>
+	
 
 
 

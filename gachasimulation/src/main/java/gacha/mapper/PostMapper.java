@@ -14,7 +14,7 @@ import gacha.model.Post;
  */
 @Mapper
 public interface PostMapper {
-
+	void deletePostByWriter(String writer);
     void insertPost(Post post); //게시글 작성
     
     Post getPostById(Integer postId);//게시글 상세 조회

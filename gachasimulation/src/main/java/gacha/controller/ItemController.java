@@ -3,21 +3,25 @@ package gacha.controller;
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import gacha.model.BoxAndItem;
+import gacha.model.Game;
 import gacha.model.Item;
 import gacha.model.ItemBox;
 import gacha.model.StartEnd;
 import gacha.service.BoxAndItemService;
 import gacha.service.BoxService;
+import gacha.service.GameService;
 import gacha.service.ItemService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
@@ -25,11 +29,120 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class ItemController {
 	@Autowired
+	private GameService gameService;
+	@Autowired
 	private ItemService itemService;
 	@Autowired
 	private  BoxService boxService;
 	@Autowired
 	private BoxAndItemService boxAndItemService;
+	
+	
+	@PostMapping("/item/namesearch.html")
+	public ModelAndView nameSearch(String name,Integer PAGE_NUM,HttpSession session) {
+		
+		int currentPage = 1;
+		if(PAGE_NUM != null) currentPage = PAGE_NUM;
+		int start = (currentPage - 1) * 5;
+		int end = ((currentPage - 1) * 5) + 6;
+		StartEnd se = new StartEnd(); se.setStart(start); se.setEnd(end);
+		List<BoxAndItem> itemList = this.boxAndItemService.getItemAndBoxByName(PAGE_NUM,name); //명칭으로 검색
+		Integer totalCount = this.boxAndItemService.getCountByName(name); //갯수 검색
+		
+		int pageCount = totalCount / 5;
+		if(totalCount % 5 != 0) pageCount++;
+		ModelAndView mav = new ModelAndView("itemlist");
+		
+		mav.addObject("startRow",start); mav.addObject("endRow",end); 
+		mav.addObject("total",totalCount); mav.addObject("itemlist", itemList);
+		mav.addObject("pageCount", pageCount); mav.addObject("currentPage",currentPage);
+		return mav;
+	}
+	
+	
+	@GetMapping("/item/inputItembox.html")
+	public ModelAndView inputBox() {
+		 ModelAndView mav = new ModelAndView("input_itemBox"); //뷰 가져오기
+		 List<Game> gameList = this.gameService.getGameList(); 
+		 mav.addObject("gamelist",gameList); //뷰에 box리스트를 삽입, 코드에 따라 box의 이름이 나올 예정
+	   	 mav.addObject(new ItemBox()); //form:form이므로 객체 하나 삽입
+		 return mav;//리턴
+	}
+	@PostMapping(value = "/item/BoxinputResult.html")
+	public 	ModelAndView inputBoxResult(ItemBox box,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
+		
+		
+		///이미지 파일 업로드 및 DB에 삽입 
+		MultipartFile multipart = box.getImageFile();//선택한 파일을 불러온다.
+		String fileName = null; String path = null; OutputStream os = null;
+		fileName = multipart.getOriginalFilename();//선택한 파일의 이름을 찾는다.
+		ServletContext ctx = session.getServletContext();//ServletContext 생성
+		path = ctx.getRealPath("/boxImage/"+fileName);// itemImage 폴더의 절대 경로를 획득
+		System.out.println("업로드 경로:"+path);
+		try {
+			os = new FileOutputStream(path);//OutputStream을 생성한다.즉, 파일 생성
+			BufferedInputStream bis = new BufferedInputStream(multipart.getInputStream());
+			//InputStream을 생성한다. 즉, 원본파일을 읽을 수 있도록 연다.
+			byte[] buffer = new byte[8156];//8K 크기로 배열을 생성한다.
+			int read = 0;//원본 파일에서 읽은 바이트 수를 저장할 변수 선언
+			while( (read = bis.read(buffer)) > 0) {//원본 파일에서 읽은 바이트 수가 0이상인 경우 반복
+				os.write(buffer, 0, read);//생성된 파일에 출력(원본 파일에서 읽은 바이트를 파일에 출력)
+			}
+		}catch(Exception e) {
+			System.out.println("파일 업로드 중 문제 발생!");
+		}finally {
+			try { if(os != null) os.close(); }catch(Exception e) {}
+		}
+		box.setImage(fileName);//업로드 된 파일 이름을 item에 설정
+		
+		this.boxService.putBox(box);
+		ModelAndView mav = new ModelAndView("BoxInputResult");	
+		return mav;
+	}
+	
+	
+	
+	@GetMapping(value = "/item/inputgame.html")
+	public ModelAndView inputgame() {
+		 ModelAndView mav = new ModelAndView("input_game"); //뷰 가져오기
+		 mav.addObject(new Game());
+		 return mav;//리턴
+	}
+	@PostMapping(value = "/item/GameInputResult.html")
+	public 	ModelAndView inputGameResult(Game game,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
+		
+		
+		///이미지 파일 업로드 및 DB에 삽입 
+		MultipartFile multipart = game.getImagefile();//선택한 파일을 불러온다.
+		String fileName = null; String path = null; OutputStream os = null;
+		fileName = multipart.getOriginalFilename();//선택한 파일의 이름을 찾는다.
+		ServletContext ctx = session.getServletContext();//ServletContext 생성
+		path = ctx.getRealPath("/gameImage/"+fileName);// itemImage 폴더의 절대 경로를 획득
+		System.out.println("업로드 경로:"+path);
+		try {
+			os = new FileOutputStream(path);//OutputStream을 생성한다.즉, 파일 생성
+			BufferedInputStream bis = new BufferedInputStream(multipart.getInputStream());
+			//InputStream을 생성한다. 즉, 원본파일을 읽을 수 있도록 연다.
+			byte[] buffer = new byte[8156];//8K 크기로 배열을 생성한다.
+			int read = 0;//원본 파일에서 읽은 바이트 수를 저장할 변수 선언
+			while( (read = bis.read(buffer)) > 0) {//원본 파일에서 읽은 바이트 수가 0이상인 경우 반복
+				os.write(buffer, 0, read);//생성된 파일에 출력(원본 파일에서 읽은 바이트를 파일에 출력)
+			}
+		}catch(Exception e) {
+			System.out.println("파일 업로드 중 문제 발생!");
+		}finally {
+			try { if(os != null) os.close(); }catch(Exception e) {}
+		}
+		game.setImage(fileName);//업로드 된 파일 이름을 설정
+		
+		this.gameService.inputGame(game);
+		ModelAndView mav = new ModelAndView("GameInputResult");	
+		return mav;
+	}
+	
+	
+	
+	
 	
 	
 	@PostMapping(value = "/item/delete.html")
@@ -117,7 +230,6 @@ public class ItemController {
 	@PostMapping(value = "/item/inputResult.html")
 	public 	ModelAndView inputResult(Item item,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
 		
-		
 		///이미지 파일 업로드 및 DB에 삽입 
 		MultipartFile multipart = item.getImagefile();//선택한 파일을 불러온다.
 		String fileName = null; String path = null; OutputStream os = null;
@@ -142,22 +254,35 @@ public class ItemController {
 		item.setImage(fileName);//업로드 된 파일 이름을 item에 설정
 		//int maxNum = this.imageDao.getMaxWid() + 1;//글번호 생성
 		this.itemService.inputItem(item);
-		ModelAndView mav = new ModelAndView("inputresult");	
+		ModelAndView mav = new ModelAndView("ItemInputResult");	
 		return mav;
 	}
 	
+	
+	
+	
 
 	@GetMapping(value = "/item/itemList.html")
-	public ModelAndView itemList(Integer PAGE_NUM,HttpSession session) {
+	public ModelAndView itemList(@RequestParam(required = false) String game,Integer PAGE_NUM,HttpSession session) {
 		
 		int currentPage = 1;
 		if(PAGE_NUM != null) currentPage = PAGE_NUM;
 		int start = (currentPage - 1) * 5;
 		int end = ((currentPage - 1) * 5) + 6;
 		StartEnd se = new StartEnd(); se.setStart(start); se.setEnd(end);
-		List<BoxAndItem> itemList = this.boxAndItemService.getItemAndGame(PAGE_NUM);//5개의 상품목록을 검색
-		
-		Integer totalCount = this.boxAndItemService.getTotalCount();//전체상품 갯수 검색
+		List<BoxAndItem> itemList =new ArrayList();
+		Integer totalCount;
+		if (game != null && !game.isEmpty()) {//게임이 비어있냐 아니냐에 따라
+			itemList=this.boxAndItemService.getItemAndGameByGame(PAGE_NUM, game);
+			totalCount=this.boxAndItemService.getCountByGame(game);
+		}
+		else {
+			itemList=this.boxAndItemService.getItemAndGameList(PAGE_NUM);//5개의 상품목록을 검색
+			
+			 totalCount = this.boxAndItemService.getTotalCount();//전체상품 갯수 검색
+		}
+		 
+	
 		
 		int pageCount = totalCount / 5;
 		if(totalCount % 5 != 0) pageCount++;

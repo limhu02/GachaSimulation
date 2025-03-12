@@ -7,8 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import gacha.model.Game;
+import gacha.model.Post;
 import gacha.model.PostList;
+import gacha.model.UserInfo;
 import gacha.service.BoxService;
+import gacha.service.GameService;
+import gacha.service.MypageService;
 import gacha.service.PostListService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +25,10 @@ public class BoardController {
     private PostListService postListService;
     @Autowired
     private BoxService boxService;
+    @Autowired
+    private MypageService mypageService;
+    @Autowired
+    private GameService gameService;
 
     /**
      * 📌 자랑 게시판 (priceList)
@@ -96,10 +105,10 @@ public class BoardController {
     /**
      * 📌 시뮬레이션 페이지 이동
      */
-    @GetMapping("/board/simulation")
+    @GetMapping("/board/simulation.html")
     public ModelAndView showSimulationBoard() {
         ModelAndView mav = new ModelAndView("index");
-        List<String> gameList = this.boxService.getGameList();
+        List<Game> gameList = this.gameService.getGameList();
         mav.addObject("BODY", "simulation.jsp");
         mav.addObject("gameList",gameList);
         return mav;
@@ -109,6 +118,10 @@ public class BoardController {
     /**
      * 📌 마이페이지
      * - 로그인한 사용자만 접근 가능
+     * - 사용자 정보 및 최근 작성한 게시글 조회 후 전달
+     *
+     * @param session 현재 로그인한 사용자 세션
+     * @return ModelAndView (마이페이지 View)
      */
     @GetMapping("/board/mypage.html")
     public ModelAndView showMyPage(HttpSession session) {
@@ -120,9 +133,25 @@ public class BoardController {
             return new ModelAndView("redirect:/login/login.html");
         }
 
-        // 로그인한 경우 → 마이페이지 표시
+        // 사용자 정보 조회
+        UserInfo userInfo = mypageService.getUserInfoById(userId);
+
+        // 최근 작성한 게시글 조회 (1개만)
+        List<Post> recentPosts = mypageService.getRecentPost(userId);
+
+        // ModelAndView 설정
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("BODY", "mypage.jsp");
+        mav.addObject("userInfo", userInfo);
+        
+        // 최신 게시글 1개만 전달
+        if (recentPosts != null && !recentPosts.isEmpty()) {
+            mav.addObject("recentPost", recentPosts.get(0));
+        } else {
+            mav.addObject("recentPost", null);
+        }
+
         return mav;
     }
+    
 }

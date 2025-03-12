@@ -9,7 +9,11 @@ import gacha.model.StartEnd;
 
 @Mapper
 public interface BoxAndItemMapper {
-	List<BoxAndItem> getItemAndGame(StartEnd se);
+	Integer getCountByName(String name);
+	List<BoxAndItem>getItemAndBoxByName(StartEnd se);
+	Integer getCountByGame(String game);
+	List<BoxAndItem>getItemAndGameByGame(StartEnd se);
+	List<BoxAndItem> getItemAndGameList(StartEnd se);
 	Integer getTotalCount();
 
 }

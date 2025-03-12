@@ -3,6 +3,11 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="gacha.mapper.ItemMapper">
 	
+	
+	
+
+	
+	
  
 	<update id="updateItem" parameterType="gacha.model.Item">
 	update item set name=#{name},probability=#{probability},rate=#{rate},image=#{image} 
