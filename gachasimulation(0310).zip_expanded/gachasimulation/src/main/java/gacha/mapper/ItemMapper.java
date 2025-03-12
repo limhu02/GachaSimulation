@@ -9,6 +9,7 @@ import gacha.model.StartEnd;
 
 @Mapper
 public interface ItemMapper {
+	
 	void updateItem (Item item);
 	void deleteItemByCode(String code);
 	Item getItemByCode(String code);

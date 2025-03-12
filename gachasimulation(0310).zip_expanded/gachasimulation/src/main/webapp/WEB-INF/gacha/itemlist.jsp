@@ -24,6 +24,34 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
+        
+        /* 검색 폼 */
+        .search-form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .search-form input[type="text"] {
+            padding: 10px;
+            width: 250px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        .search-form input[type="submit"] {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+	.search-form input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        
 
         h3 {
             text-align: center;
@@ -137,6 +165,15 @@
 <div class="container">
     <a href="${pageContext.request.contextPath}/board/simulation.html" class="game-list-button">게임목록</a>
     <h3>아이템 목록</h3>
+     <!-- 검색 폼 -->
+    <div class="search-form">
+        <form action="../item/namesearch.html" method="post">
+            아이템 검색 :
+            <input type="text" name="name" placeholder="아이템 이름을 입력하세요"/>
+            <input type="submit" value="검색"/>
+        </form>
+    </div>
+    
     <div class="page-info">
         ${startRow + 1} ~ ${endRow - 1} / ${total}
     </div>
@@ -149,6 +186,27 @@
             </tr>
         </thead>
         <tbody>
+        	<c:choose>
+        	<c:when test="${not empty item.game}">
+        	 <c:forEach var="item" items="${itemlist}">
+                <tr>
+                    <td>${item.item_code}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${sessionScope.user_id == 'admin'}">
+                                <a href="../item/detailAdmin.html?CODE=${item.item_code}">${item.item_name}</a>
+                            </c:when>
+                            <c:otherwise>
+                                <a href="../item/detail.html?CODE=${item.item_code}">${item.item_name}</a>
+                            </c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>${item.box_game}</td>
+                </tr>
+            </c:forEach>
+        	</c:when>
+        	<c:otherwise>
+        	
             <c:forEach var="item" items="${itemlist}">
                 <tr>
                     <td>${item.item_code}</td>
@@ -165,6 +223,8 @@
                     <td>${item.box_game}</td>
                 </tr>
             </c:forEach>
+            </c:otherwise>
+            </c:choose>
         </tbody>
     </table>
     <div class="pagination">

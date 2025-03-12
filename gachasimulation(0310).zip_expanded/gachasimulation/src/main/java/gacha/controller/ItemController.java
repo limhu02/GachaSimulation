@@ -3,12 +3,14 @@ package gacha.controller;
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,8 +38,29 @@ public class ItemController {
 	private BoxAndItemService boxAndItemService;
 	
 	
+	@PostMapping("/item/namesearch.html")
+	public ModelAndView nameSearch(String name,Integer PAGE_NUM,HttpSession session) {
+		
+		int currentPage = 1;
+		if(PAGE_NUM != null) currentPage = PAGE_NUM;
+		int start = (currentPage - 1) * 5;
+		int end = ((currentPage - 1) * 5) + 6;
+		StartEnd se = new StartEnd(); se.setStart(start); se.setEnd(end);
+		List<BoxAndItem> itemList = this.boxAndItemService.getItemAndBoxByName(PAGE_NUM,name); //명칭으로 검색
+		Integer totalCount = this.boxAndItemService.getCountByName(name); //갯수 검색
+		
+		int pageCount = totalCount / 5;
+		if(totalCount % 5 != 0) pageCount++;
+		ModelAndView mav = new ModelAndView("itemlist");
+		
+		mav.addObject("startRow",start); mav.addObject("endRow",end); 
+		mav.addObject("total",totalCount); mav.addObject("itemlist", itemList);
+		mav.addObject("pageCount", pageCount); mav.addObject("currentPage",currentPage);
+		return mav;
+	}
 	
-	@GetMapping(value = "/item/inputItembox.html")
+	
+	@GetMapping("/item/inputItembox.html")
 	public ModelAndView inputBox() {
 		 ModelAndView mav = new ModelAndView("input_itemBox"); //뷰 가져오기
 		 List<Game> gameList = this.gameService.getGameList(); 
@@ -235,18 +258,31 @@ public class ItemController {
 		return mav;
 	}
 	
+	
+	
+	
 
 	@GetMapping(value = "/item/itemList.html")
-	public ModelAndView itemList(Integer PAGE_NUM,HttpSession session) {
+	public ModelAndView itemList(@RequestParam(required = false) String game,Integer PAGE_NUM,HttpSession session) {
 		
 		int currentPage = 1;
 		if(PAGE_NUM != null) currentPage = PAGE_NUM;
 		int start = (currentPage - 1) * 5;
 		int end = ((currentPage - 1) * 5) + 6;
 		StartEnd se = new StartEnd(); se.setStart(start); se.setEnd(end);
-		List<BoxAndItem> itemList = this.boxAndItemService.getItemAndGame(PAGE_NUM);//5개의 상품목록을 검색
-		
-		Integer totalCount = this.boxAndItemService.getTotalCount();//전체상품 갯수 검색
+		List<BoxAndItem> itemList =new ArrayList();
+		Integer totalCount;
+		if (game != null && !game.isEmpty()) {//게임이 비어있냐 아니냐에 따라
+			itemList=this.boxAndItemService.getItemAndGameByGame(PAGE_NUM, game);
+			totalCount=this.boxAndItemService.getCountByGame(game);
+		}
+		else {
+			itemList=this.boxAndItemService.getItemAndGameList(PAGE_NUM);//5개의 상품목록을 검색
+			
+			 totalCount = this.boxAndItemService.getTotalCount();//전체상품 갯수 검색
+		}
+		 
+	
 		
 		int pageCount = totalCount / 5;
 		if(totalCount % 5 != 0) pageCount++;

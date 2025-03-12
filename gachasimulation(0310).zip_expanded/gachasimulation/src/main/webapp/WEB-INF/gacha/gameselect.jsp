@@ -176,7 +176,7 @@
     <!-- ✅ 헤더 영역 -->
     <div class="header">
         <div class="title">${game}</div>
-        <a href="${pageContext.request.contextPath}/item/itemList.html">
+        <a href="${pageContext.request.contextPath}/item/itemList.html?game=${game}">
             <button class="info-button">아이템 정보 확인하기</button>
         </a>
     </div>
