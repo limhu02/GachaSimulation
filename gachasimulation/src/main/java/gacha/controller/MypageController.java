@@ -77,7 +77,7 @@ public class MypageController {
             try {
                 // 기존 이미지 삭제
                 if (imageName != null) {
-                    String oldImagePath = session.getServletContext().getRealPath("/upload/") + imageName;
+                    String oldImagePath = session.getServletContext().getRealPath("/userprofile/") + imageName;
                     File oldFile = new File(oldImagePath);
                     if (oldFile.exists()) {
                         oldFile.delete(); // 기존 파일 삭제
@@ -85,7 +85,7 @@ public class MypageController {
                 }
 
                 // 새로운 이미지 저장
-                String uploadPath = session.getServletContext().getRealPath("/upload/");
+                String uploadPath = session.getServletContext().getRealPath("/userprofile/");
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs(); // 폴더가 없으면 생성
@@ -110,8 +110,7 @@ public class MypageController {
         // 서비스에서 DB 업데이트 실행
         mypageService.updateUserInfo(updatedUser);
 
-        // 수정 완료 후 마이페이지로 리디렉트
-        return new ModelAndView("redirect:/board/mypage.html");
+        return new ModelAndView("mypageEditSuccess");
     }
     
     /**

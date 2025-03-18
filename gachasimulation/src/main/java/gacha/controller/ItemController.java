@@ -1,7 +1,9 @@
 package gacha.controller;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,10 +35,116 @@ public class ItemController {
 	@Autowired
 	private ItemService itemService;
 	@Autowired
-	private  BoxService boxService;
+	private BoxService boxService;
 	@Autowired
 	private BoxAndItemService boxAndItemService;
 	
+	//Box 수정
+	@PostMapping("/item/updateBox.html")
+	public ModelAndView updateBox(String code, String name, Integer price, MultipartFile image,HttpSession session) {
+		ItemBox box = this.boxService.getBoxByCode(code);
+		System.out.println(image);
+		  // 프로필 이미지 파일 업로드 처리
+        String imageName = box.getImage(); // 기존 이미지 유지
+        if (image != null && !image.isEmpty()) {
+            try {
+                // 기존 이미지 삭제
+                if (imageName != null) {
+                    String oldImagePath = session.getServletContext().getRealPath("/boxImage/") + imageName;
+                    File oldFile = new File(oldImagePath);
+                    if (oldFile.exists()) {
+                        oldFile.delete(); // 기존 파일 삭제
+                    }
+                }
+
+                // 새로운 이미지 저장
+                String uploadPath = session.getServletContext().getRealPath("/boxImage/");
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) {
+                    uploadDir.mkdirs(); // 폴더가 없으면 생성
+                }
+
+                imageName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
+                File uploadFile = new File(uploadPath, imageName);
+                image.transferTo(uploadFile); // 파일 저장
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+           
+        }
+        System.out.println(imageName);
+       
+        box.setImageFile(image);box.setImage(imageName);box.setName(name);box.setPrice(price);
+        this.boxService.updateBoxByCode(box);
+        String game= box.getGame();
+        ModelAndView mav = new ModelAndView("boxUpdateResult");
+        mav.addObject("game",game);
+        return mav;
+        
+	}
+	
+	
+	//game 삭제
+	@GetMapping("/game/deleteGame.html")
+    public ModelAndView deleteGame(String gameName) {
+
+        ModelAndView mav = new ModelAndView();
+
+        // ✅ 1. 해당 게임에 연결된 아이템 박스가 몇 개인지 확인
+        int boxCount = this.gameService.countBoxByGame(gameName);
+
+        if (boxCount > 0) {
+            // ✅ 2. 연결된 박스가 있으면 삭제 실패 페이지로 이동
+            mav.addObject("gameName", gameName);
+            mav.addObject("boxCount", boxCount);
+            mav.setViewName("gameDeleteFail");  // ❗ 삭제 실패 뷰로 이동 (jsp 파일명)
+        } else {
+            // ✅ 3. 연결된 박스가 없으면 게임 삭제
+            gameService.deleteGame(gameName);
+
+            // ✅ 4. 삭제 완료 페이지로 이동 (팝업 후 목록으로 리다이렉트할 수도 있음)
+            mav.setViewName("gameDeleteSuccess"); // ❗ 삭제 성공 뷰로 이동 (jsp 파일명)
+        }
+
+        return mav;
+    }
+	
+	//item_box 삭제
+	@PostMapping("/item/deleteBox.html")
+    public ModelAndView deleteBox(String code) {
+		System.out.println(code);
+		ModelAndView mav = new ModelAndView();
+
+	    // 해당 박스에 포함된 아이템 존재 여부 확인
+	    List<Item> itemList = itemService.getItemByBox(code);
+
+	    if (itemList != null && !itemList.isEmpty()) {
+	        // 아이템이 존재할 경우 경고 메시지와 함께 item 존재 페이지로 이동
+	        mav.addObject("boxCode", code);
+	        mav.addObject("itemCount", itemList.size());
+	        mav.setViewName("itemBoxDeleteFail");
+	    } else {
+	        // 아이템이 없으면 삭제
+	        boxService.deleteBoxByCode(code);
+	        mav.setViewName("itemBoxDeleteSuccess");
+	    }
+
+	    return mav;
+    }
+	
+	@GetMapping("/item/itemBoxManage.html")
+	public ModelAndView itemBoxManage(String game) {
+
+	    // 이걸로 해당 게임에 속한 아이템 박스 리스트 조회
+	    List<ItemBox> boxList = boxService.getBoxListByGame(game);
+
+	    ModelAndView mav = new ModelAndView("itemBoxManage");
+	    mav.addObject("game", game);
+	    mav.addObject("boxList", boxList);
+
+	    return mav;
+	}
 	
 	@PostMapping("/item/namesearch.html")
 	public ModelAndView nameSearch(String name,Integer PAGE_NUM,HttpSession session) {
@@ -108,6 +216,7 @@ public class ItemController {
 		 mav.addObject(new Game());
 		 return mav;//리턴
 	}
+	
 	@PostMapping(value = "/item/GameInputResult.html")
 	public 	ModelAndView inputGameResult(Game game,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
 		
@@ -140,17 +249,14 @@ public class ItemController {
 		return mav;
 	}
 	
-	
-	
-	
-	
-	
+	//item 삭제
 	@PostMapping(value = "/item/delete.html")
-	public ModelAndView delete(String code) {
-		this.itemService.deleteItemByCode(code);
-		ModelAndView mav = new ModelAndView("itemDeleteResult");
-		return mav;
+	public ModelAndView deleteItem(String code) {
+		ModelAndView mav = new ModelAndView();
 		
+	    this.itemService.deleteItemByCode(code);
+	    mav.setViewName("itemDeleteResult");
+	    return mav;
 	}
 	
 	@PostMapping( value = "/item/modify.html")

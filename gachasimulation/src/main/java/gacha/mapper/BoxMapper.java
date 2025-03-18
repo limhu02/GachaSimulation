@@ -9,6 +9,9 @@ import gacha.model.ItemBox;
 
 @Mapper
 public interface BoxMapper {
+	
+	void updateBoxByCode(ItemBox box);
+	void deleteBoxByCode(String code);
 	void putBox(ItemBox box);
 	List<String> getGameList();
 	List<ItemBox> getBoxList();

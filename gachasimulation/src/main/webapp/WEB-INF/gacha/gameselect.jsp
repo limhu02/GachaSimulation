@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <!DOCTYPE html>
 <html lang="ko">
@@ -30,9 +30,10 @@
             color: #333;
         }
 
+        /* ✅ 초록색 버튼: 아이템 정보 확인하기 */
         .info-button {
             padding: 12px 24px;
-            background: #ff6600;
+            background: #28a745; /* 초록색 */
             color: white;
             border: none;
             font-weight: bold;
@@ -40,11 +41,34 @@
             cursor: pointer;
             font-size: 16px;
             transition: transform 0.2s, box-shadow 0.2s;
+            margin-left: 10px;
         }
 
+        /* ✅ 빨간색 버튼: 아이템 박스 관리 */
+        .manage-button {
+            padding: 12px 24px;
+            background: #dc3545; /* 빨간색 */
+            color: white;
+            border: none;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-left: 10px;
+        }
+
+        /* ✅ 버튼 hover 효과 */
         .info-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3);
+            background: #218838;
+        }
+
+        .manage-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3);
+            background: #c82333;
         }
 
         .container {
@@ -175,10 +199,23 @@
 
     <!-- ✅ 헤더 영역 -->
     <div class="header">
-        <div class="title">${game}</div>
-        <a href="${pageContext.request.contextPath}/item/itemList.html?game=${game}">
-            <button class="info-button">아이템 정보 확인하기</button>
-        </a>
+        <a href="${pageContext.request.contextPath}/board/simulation.html" style="text-decoration: none;">
+        	<div class="title">${game}</div>
+   		</a>
+        
+        <div>
+            <!-- 아이템 정보 확인하기 버튼 (초록색) -->
+            <a href="${pageContext.request.contextPath}/item/itemList.html?game=${game}">
+                <button class="info-button">아이템 정보 확인하기</button>
+            </a>
+
+            <!-- 아이템 박스 관리 버튼 (빨간색) - 관리자만 노출 -->
+            <c:if test="${sessionScope.user_id == 'admin'}">
+                <a href="${pageContext.request.contextPath}/item/itemBoxManage.html?game=${game}">
+                    <button class="manage-button">아이템 박스 관리</button>
+                </a>
+            </c:if>
+        </div>
     </div>
 
     <!-- ✅ 게임 설명 영역 -->
@@ -192,7 +229,7 @@
         <div class="grid-container">
             <c:forEach var="gameBox" items="${boxList}">
                 <div class="box">
-                    <!-- ✅ 이미지 자리 (임시 이미지 또는 실제 박스 이미지 경로) -->
+                    <!-- ✅ 박스 이미지 -->
                     <img src="${pageContext.request.contextPath}/boxImage/${gameBox.image}" alt="${gameBox.name}">
 
                     <!-- ✅ 박스 이름 -->
@@ -211,11 +248,6 @@
                 </div>
             </c:forEach>
         </div>
-    </div>
-
-    <!-- ✅ 뒤로가기 버튼 -->
-    <div class="bottom-container">
-        <button class="back-button" onclick="window.history.back();">뒤로가기</button>
     </div>
 
 </body>

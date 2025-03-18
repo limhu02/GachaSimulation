@@ -12,6 +12,12 @@ import gacha.model.ItemBox;
 public class BoxService {
 	@Autowired
 	private BoxMapper boxMapper;
+	
+	public void updateBoxByCode(ItemBox box) {this.boxMapper.updateBoxByCode(box);}
+	
+	public void deleteBoxByCode(String code) {
+		this.boxMapper.deleteBoxByCode(code);
+	}
 
 	public void putBox(ItemBox box) {
 		this.boxMapper.putBox(box);

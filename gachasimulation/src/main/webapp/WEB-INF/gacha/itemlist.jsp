@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>  
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>  
 <!DOCTYPE html>
@@ -24,8 +23,36 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             position: relative;
         }
-        
-        /* 검색 폼 */
+
+        /* admin 버튼 하단 고정 스타일 */
+        .admin-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 40px;
+        }
+
+        .admin-buttons a button {
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            color: #fff;
+        }
+
+        .admin-buttons a button:nth-child(1) { background-color: #007bff; }
+        .admin-buttons a button:nth-child(1):hover { background-color: #0056b3; }
+
+        .admin-buttons a button:nth-child(2) { background-color: #fd7e14; }
+        .admin-buttons a button:nth-child(2):hover { background-color: #e56a0b; }
+
+        .admin-buttons a button:nth-child(3) { background-color: #28a745; }
+        .admin-buttons a button:nth-child(3):hover { background-color: #218838; }
+
+        /* 기존 스타일 유지 */
         .search-form {
             text-align: center;
             margin-bottom: 20px;
@@ -48,10 +75,10 @@
             cursor: pointer;
             transition: background-color 0.2s;
         }
-	.search-form input[type="submit"]:hover {
+
+        .search-form input[type="submit"]:hover {
             background-color: #0056b3;
         }
-        
 
         h3 {
             text-align: center;
@@ -130,42 +157,15 @@
             color: #fff;
             font-weight: bold;
         }
-
-        .add-item-btn-container {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .add-item-btn, .edit-item-btn, .delete-item-btn {
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: 50px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: background-color 0.2s;
-        }
-
-        .add-item-btn { background-color: #28a745; }
-        .add-item-btn:hover { background-color: #218838; }
-
-        .edit-item-btn { background-color: #fd7e14; }
-        .edit-item-btn:hover { background-color: #e56a0b; }
-
-        .delete-item-btn { background-color: #dc3545; }
-        .delete-item-btn:hover { background-color: #c82333; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <a href="${pageContext.request.contextPath}/board/simulation.html" class="game-list-button">게임목록</a>
-    <h3>아이템 목록</h3>
-     <!-- 검색 폼 -->
+    <a href="${pageContext.request.contextPath}/board/simulation.html" class="game-list-button">게임목록으로 돌아가기</a>
+    <h3>전체 아이템 목록</h3>
+
+    <!-- 검색 폼 -->
     <div class="search-form">
         <form action="../item/namesearch.html" method="post">
             아이템 검색 :
@@ -173,10 +173,11 @@
             <input type="submit" value="검색"/>
         </form>
     </div>
-    
+
     <div class="page-info">
         ${startRow + 1} ~ ${endRow - 1} / ${total}
     </div>
+
     <table>
         <thead>
             <tr>
@@ -186,47 +187,47 @@
             </tr>
         </thead>
         <tbody>
-        	<c:choose>
-        	<c:when test="${not empty item.game}">
-        	 <c:forEach var="item" items="${itemlist}">
-                <tr>
-                    <td>${item.item_code}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${sessionScope.user_id == 'admin'}">
-                                <a href="../item/detailAdmin.html?CODE=${item.item_code}">${item.item_name}</a>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="../item/detail.html?CODE=${item.item_code}">${item.item_name}</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                    <td>${item.box_game}</td>
-                </tr>
-            </c:forEach>
-        	</c:when>
-        	<c:otherwise>
-        	
-            <c:forEach var="item" items="${itemlist}">
-                <tr>
-                    <td>${item.item_code}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${sessionScope.user_id == 'admin'}">
-                                <a href="../item/detailAdmin.html?CODE=${item.item_code}">${item.item_name}</a>
-                            </c:when>
-                            <c:otherwise>
-                                <a href="../item/detail.html?CODE=${item.item_code}">${item.item_name}</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </td>
-                    <td>${item.box_game}</td>
-                </tr>
-            </c:forEach>
-            </c:otherwise>
+            <c:choose>
+                <c:when test="${not empty item.game}">
+                    <c:forEach var="item" items="${itemlist}">
+                        <tr>
+                            <td>${item.item_code}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${sessionScope.user_id == 'admin'}">
+                                        <a href="../item/detailAdmin.html?CODE=${item.item_code}">${item.item_name}</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="../item/detail.html?CODE=${item.item_code}">${item.item_name}</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${item.box_game}</td>
+                        </tr>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach var="item" items="${itemlist}">
+                        <tr>
+                            <td>${item.item_code}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${sessionScope.user_id == 'admin'}">
+                                        <a href="../item/detailAdmin.html?CODE=${item.item_code}">${item.item_name}</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="../item/detail.html?CODE=${item.item_code}">${item.item_name}</a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${item.box_game}</td>
+                        </tr>
+                    </c:forEach>
+                </c:otherwise>
             </c:choose>
         </tbody>
     </table>
+
     <div class="pagination">
         <c:set var="pageCount" value="${pageCount}" />
         <c:set var="currentPage" value="${currentPage}" />
@@ -245,20 +246,23 @@
             <a href="../item/itemList.html?PAGE_NUM=${endPage + 1}">[다음]</a>
         </c:if>
     </div>
+
+    <!-- ✅ 관리자용 버튼 하단에 배치 -->
+    <c:if test="${sessionScope.user_id=='admin'}">
+        <div class="admin-buttons">
+            <a href="../item/inputgame.html">
+                <button>게임 입력</button>
+            </a>
+            <a href="../item/inputItembox.html">
+                <button>아이템 상자 입력</button>
+            </a>
+            <a href="../item/input.html">
+                <button>아이템 입력</button>
+            </a>
+        </div>
+    </c:if>
+
 </div>
-<c:if test="${sessionScope.user_id=='admin'}">
-    <div class="add-item-btn-container">
-        <a href="../item/inputgame.html">
-            <button class="edit-item-btn">게임 입력</button>
-        </a>
-        <a href="../item/inputItembox.html">
-            <button class="delete-item-btn">아이템 상자 입력</button>
-        </a>
-        <a href="../item/input.html">
-            <button class="add-item-btn">아이템 입력</button>
-        </a>
-        
-    </div>
-</c:if>
+
 </body>
 </html>

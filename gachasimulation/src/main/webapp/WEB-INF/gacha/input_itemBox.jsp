@@ -166,7 +166,7 @@
             <input type="submit" value="등록하기" class="submit-btn" />
 
             <!-- ✅ 취소 버튼은 아이템 목록으로 이동 -->
-            <a href="${pageContext.request.contextPath}/item/itemList.html" class="cancel-btn btn">취 소</a>
+            <a href="${pageContext.request.contextPath}/board/simulation.html" class="cancel-btn btn">취 소</a>
         </div>
     </form:form>
 </div>

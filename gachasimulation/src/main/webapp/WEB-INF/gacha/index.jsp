@@ -11,8 +11,9 @@
 
 <header>
     <div class="top-bar">
-        <div class="page-title" onclick="location.href='/index/index.html'" 
-        		style="cursor: pointer;">Gacha 게시판</div>
+        <div class="site-logo" onclick="location.href='/index/index.html'">
+    		천장연구소
+		</div>
         <nav class="menu-bar">
             <ul class="menu">
                 <li><a href="/board/priceList.html">자랑 게시판</a></li>
@@ -20,6 +21,10 @@
                 <li><a href="/board/requestList.html">요청/질문 게시판</a></li>
                 <li><a href="/board/simulation.html">시뮬레이션</a></li>
                 <li><a href="/board/mypage.html">마이페이지</a></li>
+                <c:if test="${sessionScope.user_id=='admin'}"> 
+                <li><a href="/admin/userlist.html">가입자 목록</a></li>
+                </c:if>
+                
             </ul>
         </nav>
 
@@ -29,7 +34,7 @@
                     <a href="/login/login.html" class="auth-btn">로그인/회원가입</a>
                 </c:when>	
                 <c:otherwise>
-                    <span>${sessionScope.user_id}님</span>
+                    <span>☆${sessionScope.user_id}님☆ </span>
                     <a href="/login/logout.html" class="logout-btn">로그아웃</a>
                 </c:otherwise>
             </c:choose>
