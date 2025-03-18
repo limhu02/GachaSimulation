@@ -24,7 +24,7 @@
             <a href="/board/priceList.html"><button type="button">초기화</button></a>
         </form>
     </div>
-
+	<br/>
     <!-- 게시글 테이블 -->
     <table>
         <thead>
@@ -55,7 +55,7 @@
             </c:choose>
         </tbody>
     </table>
-
+	<br/>
     <!-- 페이지네이션 -->
     <div class="pagination">
         <c:if test="${currentPage > 1}">
@@ -68,7 +68,7 @@
             <a href="/board/priceList.html?pageNo=${currentPage + 1}&searchKeyword=${searchKeyword}">[다음]</a>
         </c:if>
     </div>
-
+	<br/>
     <!-- 게시글 쓰기 버튼 -->
     <a href="/board/write.html" class="write-btn">게시글 쓰기</a>
 </div>

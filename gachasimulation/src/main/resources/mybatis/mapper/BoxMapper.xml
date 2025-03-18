@@ -2,7 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="gacha.mapper.BoxMapper">
-
+	<update id="updateBoxByCode" parameterType="gacha.model.ItemBox">
+	update item_box set name=#{name},price=#{price},image=#{image, jdbcType=VARCHAR} where code=#{code}
+	</update>
+	
+	
+	<delete id="deleteBoxByCode" parameterType="String">
+    delete from item_box where code = #{code}
+	</delete>
 
 	<insert id="putBox" parameterType="gacha.model.ItemBox">
 	insert into item_box values(#{code},#{name},#{game},#{price},#{image})

@@ -18,7 +18,6 @@ body {
 .mypage-container {
     width: 100%;
     max-width: 800px; /* 게시판과 비슷한 크기로 조정 */
-    margin: 50px auto; /* 위아래 여백 추가하여 네비게이션과 충돌 방지 */
     background: white;
     padding: 30px;
     border-radius: 12px;
@@ -125,7 +124,7 @@ body {
             <!-- 프로필 사진 -->
             <c:choose>
                 <c:when test="${not empty userInfo.profile_image}">
-                    <img class="profile-img" src="${pageContext.request.contextPath}/upload/${userInfo.profile_image}" alt="프로필 사진">
+                    <img class="profile-img" src="${pageContext.request.contextPath}/userprofile/${userInfo.profile_image}" alt="프로필 사진">
                 </c:when>
                 <c:otherwise>
                 	<!-- 이미지 설정하지 전에는 기본 프로필 이미지 출력 -->

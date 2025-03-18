@@ -13,6 +13,10 @@ public class GameService {
 	@Autowired
 	private GameMapper gameMapper;
 	
+	public int countBoxByGame(String game) {
+	       Integer count = gameMapper.countBoxByGame(game);
+	       return count != null ? count : 0; // Null 방지
+	   }
 	public void deleteGame(String name) {this.gameMapper.deleteGame(name);}
 	public void updateGameImage(Game game) {this.gameMapper.updateGameImage(game);}
 	public List<Game> getGameList (){return this.gameMapper.getGameList();}

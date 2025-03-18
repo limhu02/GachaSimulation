@@ -11,7 +11,7 @@
 	<script type="text/javascript">
 		setTimeout(function(){
 			alert("아이템 입력 완료!");
-			location.href="../item/itemList.html";
+			location.href="/board/simulation.html";
 		},100);
 		</script>
 </body>

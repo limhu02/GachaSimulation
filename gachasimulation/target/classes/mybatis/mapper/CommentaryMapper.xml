@@ -4,13 +4,13 @@
 
 <mapper namespace="gacha.mapper.CommentaryMapper">
 	<delete id="deleteCommentaryByWriter" parameterType="String">
-		delete from commentary where writer=${writer}
+		delete from commentary where writer=#{writer}
 	</delete>
 	<delete id="deleteCommentaryByPostId" parameterType="Integer">
-			delete from commentary where post_id=${post_id}
+			delete from commentary where post_id=#{post_id}
 	</delete>
 	<delete id="deleteCommentaryByCode" parameterType="Integer">
-		delete from commentary where code=${code}
+		delete from commentary where code=#{code}
 	</delete>
 	
 

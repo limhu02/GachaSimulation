@@ -9,7 +9,7 @@
 <body>
 <script type="text/javascript">
 			setTimeout(function(){
-				alert("삭제 완료");
+				alert("아이템 삭제가 완료되었습니다");
 				location.href="../item/itemList.html";
 			},100);
 		</script>

@@ -119,7 +119,7 @@
         <form action="/entry/register.html" method="post" name="frm"
             onsubmit="return check();">
 
-            <input type="hidden" name="idChecked" value="" />
+            <input type="hidden" name="idChecked" value="no" />
 
             <div class="id-input-container">
                 <input type="text" name="userId" class="input-box id-input-box" placeholder="ID를 입력하세요" required>
@@ -145,6 +145,12 @@
                 alert("비밀번호가 일치하지 않습니다.");
                 return false;
             }
+            // 아이디 중복 체크 확인
+            if (document.frm.idChecked.value !== "yes") {
+                alert("아이디 중복 확인을 해주세요.");
+                return false;
+            }
+            return true;
         }
 
         function idCheck() {
@@ -154,6 +160,8 @@
                 document.frm.userId.focus();
                 return false;
             }
+        
+         
 
             var url = "/entry/idcheck.html?USER_ID=" + encodeURIComponent(userId);
             window.open(url, "_blank_", "width=450,height=200");

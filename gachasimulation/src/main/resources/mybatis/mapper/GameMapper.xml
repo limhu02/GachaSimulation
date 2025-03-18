@@ -11,6 +11,10 @@
 	<delete id="deleteGame" parameterType="String">
 	delete from game where name=#{name}
 	</delete>
+	<!-- 박스 존재 여부 확인 쿼리 -->
+	<select id="countBoxByGame" parameterType="String" resultType="Integer">
+    	select count(*) from item_box where game = #{game}
+	</select>
 	
 	<select id="getGameList" resultType="gacha.model.Game">
 	select name,image from game
