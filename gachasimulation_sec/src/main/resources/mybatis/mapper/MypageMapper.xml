@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gacha.mapper.MypageMapper">
+	<select id="getUserInfoById" parameterType="String" resultType="gacha.model.UserInfo">
+    	SELECT user_id, name, email, reg_date, profile_image
+   		FROM user_info
+    	WHERE user_id = #{userId}
+	</select>
+	
+	<select id="getRecentPost" parameterType="String" resultType="gacha.model.Post">
+    	SELECT post_id AS postId, title, TO_CHAR(write_date, 'YYYY-MM-DD HH24:MI:SS') AS writeDate
+    	FROM (
+       		SELECT p.post_id, p.title, p.write_date
+        	FROM post p
+        	WHERE p.writer = #{userId}
+        	ORDER BY p.write_date DESC
+    	) WHERE ROWNUM = 1
+	</select>
+	
+	<update id="updateUserInfo" parameterType="gacha.model.UserInfo">
+    	UPDATE user_info
+    	SET name = #{name},
+        	email = #{email},
+        	profile_image = #{profile_image, jdbcType=VARCHAR}
+    	WHERE user_id = #{user_id}
+	</update>
+	<!-- 📌 회원이 작성한 게시글 삭제 -->
+	<delete id="deleteUserPosts" parameterType="String">
+    	DELETE FROM post WHERE writer = #{userId}
+	</delete> 
+	<!-- 📌 회원 탈퇴 -->
+    <delete id="deleteUser" parameterType="String">
+        DELETE FROM user_info WHERE user_id = #{userId}
+    </delete>
+</mapper>
+
+
+
+
