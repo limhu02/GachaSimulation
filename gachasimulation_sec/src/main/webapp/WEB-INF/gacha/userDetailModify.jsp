@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -41,18 +42,24 @@
             border-radius: 5px;
         }
 
-        /* 프로필 이미지 스타일 */
-        .profile-image-container {
-            margin-bottom: 20px;
-        }
+        
+/* ✅ 프로필 스타일 */
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
-        .profile-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #ccc;
-        }
+/* ✅ 프로필 이미지 스타일 */
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #4CAF50;
+    margin-bottom: 10px;
+}
 
         /* 버튼 스타일 */
         .buttons {
@@ -97,8 +104,15 @@
 
     <!-- 프로필 이미지 -->
     <div class="profile-image-container">
-        <img src="${pageContext.request.contextPath}/upload/${userInfo.profile_image}" 
-             alt="기본 프로필" class="profile-image">
+          <c:choose>
+                <c:when test="${not empty userInfo.profile_image}">
+                    <img class="profile-img" src="${pageContext.request.contextPath}/userprofile/${userInfo.profile_image}" alt="프로필 사진">
+                </c:when>
+                <c:otherwise>
+                	<!-- 이미지 설정하지 전에는 기본 프로필 이미지 출력 -->
+                    <img class="profile-img" src="${pageContext.request.contextPath}/userprofile/Default-Profile.png" alt="기본 프로필">
+                </c:otherwise>
+            </c:choose>
     </div>
 
     <!-- 가입자 정보 수정 폼 -->
@@ -106,6 +120,10 @@
         <div class="input-group">
             <label>ID</label>
             <input type="text" name="user_id" value="${userInfo.user_id}" readonly>
+        </div>
+         <div class="input-group">
+            <label>PassWord</label>
+            <input type="password" name="user_pwd">
         </div>
         <div class="input-group">
             <label>이름</label>

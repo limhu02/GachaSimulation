@@ -2,12 +2,15 @@ package gacha.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,7 +36,26 @@ public class AdminController {
 	private PostService postService;
 	@Autowired
 	private AuthService authService;
-	
+	@Autowired
+    private PasswordEncoder passwordEncoder;
+
+	@PostMapping("/admin/deleteSelectedUsers.html")
+	public ModelAndView deleteSelect(@RequestParam(required = false) List<String>user_id) {
+		ModelAndView mav =new ModelAndView();
+		if (user_id == null || user_id.isEmpty()) { //선택한 리스트가 없는데 삭제버튼을 누를경우
+			mav.setViewName("noSelectedUser"); //선택한 유저 없음 메세지가 뜨고 목록으로 이동하는 jsp 로 뷰 설정
+			return mav; //리턴
+		}
+		for(String id:user_id) {
+			this.commentService.deleteCommentaryByWriter(id);
+			this.postService.deletePostByWriter(id);
+			this.authService.deleteAuthById(id);
+			this.adminService.deleteUser(id);
+		}
+		mav.setViewName("deleteSelectComplete");
+			
+		return mav;
+	}
 	
 	@PostMapping("/admin/userdeleteresult.html")
 	public ModelAndView delete(String userId) {
@@ -49,9 +71,16 @@ public class AdminController {
 	
 	
 	@PostMapping("/admin/update.html")
-	public ModelAndView update( String user_id,String name,String email,MultipartFile profile_image,String auth,HttpSession session) {
+	public ModelAndView update( String user_id,String name,String user_pwd,String email,MultipartFile profile_image,String auth,HttpSession session) {
 		UserInfo user = this.adminService.getUserInfoById(user_id);
 		
+		if (user_pwd ==null || user_pwd.equals("")) {
+			user_pwd=user.getUser_pwd();
+			user.setUser_pwd(user_pwd);
+		}else {
+			String encodedPwd = this.passwordEncoder.encode(user_pwd);
+			user.setUser_pwd(encodedPwd);
+		}
 		
 		  // 프로필 이미지 파일 업로드 처리
         String imageName = user.getProfile_image(); // 기존 이미지 유지
@@ -118,20 +147,25 @@ public class AdminController {
 	}
 	
 	@GetMapping("/admin/userlist.html")
-	public ModelAndView userList(Integer pageNo,HttpSession session) {
+	public ModelAndView userList(@RequestParam(required = false)String searchKeyword,Integer pageNo) {
 		ModelAndView mav = new ModelAndView("index");
-		
+				
 		int currentPage = 1;
 		if(pageNo != null) currentPage = pageNo;
 		int start = (currentPage - 1) * 5;
 		int end = ((currentPage - 1) * 5) + 6;
 		StartEnd se = new StartEnd(); se.setStart(start); se.setEnd(end);
-		List<UserInfo> userList = this.adminService.getUserList(pageNo);
-		
-		Integer totalCount = this.adminService.getTotaUserlCount();//전체 사용자 수
-		 
-	
-		
+		List<UserInfo> userList = new ArrayList<UserInfo>();
+		Integer totalCount;
+		if (searchKeyword != null && !searchKeyword.isEmpty()) {//게임이 비어있냐 아니냐에 따라
+			userList=this.adminService.searchUserById(searchKeyword, pageNo);
+			totalCount=this.adminService.getCountSearchUserById(searchKeyword);
+		}
+		else {
+			userList=this.adminService.getUserList(pageNo);//5개의 상품목록을 검색
+			
+			 totalCount = this.adminService.getTotaUserlCount();//전체상품 갯수 검색
+		}
 		int pageCount = totalCount / 5;
 		if(totalCount % 5 != 0) pageCount++;
 		mav.addObject("BODY","userList.jsp");
@@ -142,7 +176,6 @@ public class AdminController {
 		
 		return mav;
 	}
-	
 	
 
 }

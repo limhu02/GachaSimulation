@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -50,6 +51,25 @@
             border: 3px solid #337ab7;
             background-color: #f5f5f5;
         }
+        
+	/* ✅ 프로필 스타일 */
+	.profile {
+    	display: flex;
+    	flex-direction: column;
+    	align-items: center;
+    	margin-bottom: 20px;
+	}
+
+	/* ✅ 프로필 이미지 스타일 */
+	.profile-img {
+    	width: 120px;
+    	height: 120px;
+    	border-radius: 50%;
+    	object-fit: cover;
+    	border: 3px solid #337ab7;
+    	background-color: #f5f5f5;
+   		margin-bottom: 10px;
+	}
 
         /* 입력 그룹 */
         .input-group {
@@ -147,12 +167,19 @@
 
     <!-- 프로필 이미지 -->
     <div class="profile-image-container">
-        <img src="${pageContext.request.contextPath}/userprofile/${userInfo.profile_image}" 
-             alt="프로필 이미지" class="profile-image">
+       <c:choose>
+                <c:when test="${not empty userInfo.profile_image}">
+                    <img class="profile-img" src="${pageContext.request.contextPath}/userprofile/${userInfo.profile_image}" alt="프로필 사진">
+                </c:when>
+                <c:otherwise>
+                	<!-- 이미지 설정하지 전에는 기본 프로필 이미지 출력 -->
+                    <img class="profile-img" src="${pageContext.request.contextPath}/userprofile/Default-Profile.png" alt="기본 프로필">
+                </c:otherwise>
+            </c:choose>
     </div>
 
     <!-- 마이페이지 수정 폼 -->
-    <form action="${pageContext.request.contextPath}/mypage/update" method="post" enctype="multipart/form-data">
+    <form action="${pageContext.request.contextPath}/mypage/update.html" method="post" enctype="multipart/form-data">
         <div class="input-group">
             <label for="user_id">아이디</label>
             <input type="text" id="user_id" value="${userInfo.user_id}" readonly>

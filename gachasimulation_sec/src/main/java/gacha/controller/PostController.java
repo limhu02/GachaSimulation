@@ -218,8 +218,8 @@ public class PostController {
      */
     @PostMapping("/board/deletePost.html")
     public ModelAndView deletePost(@RequestParam("postId") Integer postId) {
-        postService.deletePost(postId);
-        commentService.deleteCommentaryByPostId(postId);
+    	commentService.deleteCommentaryByPostId(postId);
+    	postService.deletePost(postId);
         return new ModelAndView("redirect:/index/index.html"); // 삭제 후 목록 페이지로 이동
     }
 

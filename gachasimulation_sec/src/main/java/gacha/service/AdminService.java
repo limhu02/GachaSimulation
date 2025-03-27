@@ -14,6 +14,28 @@ import gacha.model.UserInfo;
 public class AdminService {
 	@Autowired
 	private AdminMapper adminmapper;
+	public Integer getCountSearchUserById(String keyword) {return this.adminmapper.getCountSearchUserById(keyword);}
+	public List<UserInfo>searchUserById(String searchKeyword, Integer pageNo){
+		 if (pageNo == null || pageNo < 1) pageNo = 1;
+
+	        int pageSize = 5;
+	        int start = (pageNo - 1) * pageSize + 1;
+	        int end = pageNo * pageSize;
+
+	        StartEnd se = new StartEnd();	       
+	        se.setSearchKeyword(searchKeyword);
+	        se.setStart(start);
+	        se.setEnd(end);
+
+	        List<UserInfo> result = this.adminmapper.searchUserById(se);
+
+	        // 🚀 디버깅: 검색 결과 출력
+	        for (UserInfo user : result) {
+	            System.out.println("[DEBUG] 검색 결과 user_id: " + user.getUser_id());
+	        }
+	        return result;
+
+	}
 	
 	public void deleteUser(String user) {this.adminmapper.deleteUser(user);}
 	

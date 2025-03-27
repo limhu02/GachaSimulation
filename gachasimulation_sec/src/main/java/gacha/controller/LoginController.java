@@ -1,11 +1,11 @@
 package gacha.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import gacha.model.LoginUser;
@@ -20,7 +20,18 @@ import jakarta.validation.Valid;
 public class LoginController {
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
+    @PostMapping("/login/setpwd.html")
+    public ModelAndView setPassword(String pwd,String userId) {
+    	
+    	UserInfo user = this.loginService.getUserInfoById(userId);
+    	user.setUser_pwd(this.passwordEncoder.encode(pwd));
+    	this.loginService.updateUserPwd(user);
+    	ModelAndView mav = new ModelAndView("resetPwdSuccess");
+    	return mav;
+    }
     @GetMapping("/login/loginsec.html")
     public ModelAndView login() {
         ModelAndView mav = new ModelAndView("login");
@@ -88,11 +99,11 @@ public class LoginController {
         String password = loginService.findUserPwd(userInfo);
         
         if (password != null) {
-            mav.addObject("message", "비밀번호: " + password);
+            mav.setViewName("resetPassword");
         } else {
             mav.addObject("message", "해당 정보로 등록된 계정이 없습니다.");
         }
-        
+        mav.addObject("userId",userInfo.getUser_id());
         return mav;
     }
 }

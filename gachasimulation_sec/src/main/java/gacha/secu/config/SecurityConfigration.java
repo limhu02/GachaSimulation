@@ -32,6 +32,7 @@ public class SecurityConfigration { //시큐리티 구성요소 클래스
 		//csrf 파일(Cross Site Request Forgery)를 비활성화 -> 사용자의 의도없이 특정 사이트를 공격하는 행위를 비활성화
 		.requestMatchers("/index/index.html").permitAll()
 		.requestMatchers("/board/detail*").permitAll()
+		.requestMatchers("/mypage/deleted.html").permitAll()
 		.requestMatchers("/board/mypage.html").hasAnyRole("MEMBER","ADMIN") //마이페이지 접근
 		.requestMatchers("/board/write.html").hasAnyRole("MEMBER","ADMIN")
 		.requestMatchers("/board/**").permitAll()

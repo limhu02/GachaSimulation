@@ -17,6 +17,21 @@ public class LoginService {
 
     @Autowired
     private LoginMapper loginMapper;
+    
+	/**
+	   * 📌 사용자 정보 확인
+	   *
+	   * @param 사용자 ID
+	   * @return ID로 찾은 사용자 정보
+	   */
+    public UserInfo getUserInfoById(String id) {return this.loginMapper.getUserInfoById(id);}
+/**
+ * 📌 비밀번호 변경
+ *
+ * @param 사용자 정보
+ * @return 변경 실행
+ */
+    public void updateUserPwd(UserInfo userInfo) {this.loginMapper.updateUserPwd(userInfo);}
 
     /**
      * 📌 사용자 인증 (로그인)

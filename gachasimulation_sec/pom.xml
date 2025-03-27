@@ -11,6 +11,7 @@
 	<groupId>gacha</groupId>
 	<artifactId>gachasimulation</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>gachasimulation</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
@@ -47,9 +48,10 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc11</artifactId>
-			<scope>runtime</scope>
+			 <groupId>com.oracle.database.jdbc</groupId>
+		    <artifactId>ojdbc8</artifactId>
+   			 <version>19.8.0.0</version>
+  			  <scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -111,6 +113,12 @@
     		<artifactId>spring-security-taglibs</artifactId>
     		<version>6.4.2</version> <!-- 사용 중인 버전에 맞게 조정 -->
     </dependency>
+    <dependency>
+    	<groupId>org.springframework.boot</groupId>
+    	<artifactId>spring-boot-starter-tomcat</artifactId>
+    	<scope>provided</scope>    
+    </dependency>
+    
 	</dependencies>
 	
 

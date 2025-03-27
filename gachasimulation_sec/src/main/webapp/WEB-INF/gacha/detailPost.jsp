@@ -284,20 +284,22 @@
             
           
            
-            <sec:authorize access="hasRole('ADMIN')">
-            <input type="text" name="title" value="${post.title}">
+              <sec:authorize access="hasRole('ADMIN') or ${isWriter}">
+           		 <input type="text" name="title" value="${post.title}">
             </sec:authorize>
-            <!-- sec:authorize 안에서 el 사용이 불가능 하므로 작성자와 현재 로그인한 id가 같은지에 대한 비교 결과값을 writer 변수로 받아서 조건문으로 체크-->
-            <c:if test="${isWriter}">
-            <input type="text" name="title" value="${post.title}">
-            </c:if>
-            ${post.title}
+             <sec:authorize access="!hasRole('ADMIN') and !${isWriter}">
+  			  ${post.title}
+			</sec:authorize>
+           
+           
+          
+            
 
         </div>
 
         <!-- 게시글 정보 -->
         <div class="post-info">
-            <a href="/board/userDetail.html?user_id=${post.writerId }"><span>작성자: <b>${post.writerId}</b></span></a>
+            <a href="/board/userDetail.html?user_id=${post.writerId}"><span>작성자: <b>${post.writerId}</b></span></a>
             <span>작성일: ${post.writeDate}</span>
            
         </div>
@@ -308,46 +310,40 @@
                 <img src="${pageContext.request.contextPath}/upload/${post.imageName}" alt="게시글 이미지">
             </div>
         </c:if>
-        <sec:authorize access="hasRole('ADMIN')">
+          <sec:authorize access="hasRole('ADMIN') or ${isWriter}">
             <div class="image-upload">
                 <label>이미지 변경:</label>
                 <input type="file" name="image">
             </div>
         </sec:authorize>
+      
         
-        <c:if test="${isWriter}">
-          <div class="image-upload">
-                <label>이미지 변경:</label>
-                <input type="file" name="image">
-            </div>
-        </c:if>
 
         <!-- 내용 -->
         <div class="post-content">
             <label>내용</label>
-            <sec:authorize access="hasRole('ADMIN')">
+            <sec:authorize access="hasRole('ADMIN') or ${isWriter}">
             	<textarea name="content" rows="10">${post.content}</textarea>
             </sec:authorize>
             
-            <c:if test="${isWriter}">
-            <textarea name="content" rows="10">${post.content}</textarea>
-            </c:if>
+          
+           <sec:authorize access="!hasRole('ADMIN') and !${isWriter}">
+  			  ${post.content}
+			</sec:authorize>
+             
            
-            	 ${post.content}
+            
           
         </div>
 
         <!-- 수정 및 삭제 버튼 -->
         
         <div class="buttons">
-           <sec:authorize access="hasRole('ADMIN')">
+           <sec:authorize access="hasRole('ADMIN') or ${isWriter}">
                 <button type="submit" class="edit-btn">수정</button>
                 <button type="button" class="delete-btn" onclick="deletePost(${postId})">삭제</button>
             </sec:authorize>
-            <c:if test="${isWriter}">
-           		 <button type="submit" class="edit-btn">수정</button>
-                <button type="button" class="delete-btn" onclick="deletePost(${postId})">삭제</button>
-            </c:if>
+           
         </div>
     </form>
 
@@ -371,17 +367,14 @@
                         <span>${comment.write_date}</span>
                     </div>
                     <div class="comment-body">${comment.content}</div>
-                    <div class="comment-actions">
+                    <div class="comment-actions"> 
                   <!-- 현재 로그인한 사용자가 댓글 작성자인지 비교하는 값 -->
-				  <c:set var="isCommentWriter" value="${comment.writer == pageContext.request.userPrincipal.name}" />
-                        <sec:authorize access="hasRole('ADMIN')">
-                            <button onclick="updateComment(${comment.code})">수정</button>
+                  <c:set var="isCommentWriter" value="${comment.writer == pageContext.request.userPrincipal.name}" />
+                   <sec:authorize access="hasRole('ADMIN') or ${isCommentWriter}">
+  					    <button onclick="updateComment(${comment.code})">수정</button>
                             <button onclick="deleteComment(${comment.code},${comment.post_id})">삭제</button>
-                        </sec:authorize>
-                        <c:if test="${isCommentWriter}">
-                        	<button onclick="updateComment(${comment.code})">수정</button>
-                            <button onclick="deleteComment(${comment.code},${comment.post_id})">삭제</button>
-                        </c:if>
+					</sec:authorize>
+					  
                     </div>
                 </div>
             </c:forEach>
