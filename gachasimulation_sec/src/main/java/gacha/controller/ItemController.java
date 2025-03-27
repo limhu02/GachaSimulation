@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +28,7 @@ import gacha.service.GameService;
 import gacha.service.ItemService;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 public class ItemController {
@@ -177,9 +179,17 @@ public class ItemController {
 		 return mav;//리턴
 	}
 	@PostMapping(value = "/item/BoxinputResult.html")
-	public 	ModelAndView inputBoxResult(ItemBox box,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
-		
-		
+	public 	ModelAndView inputBoxResult(@Valid ItemBox box,BindingResult br,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
+		ModelAndView mav = new ModelAndView();
+		if(br.hasErrors()) {
+			mav.getModel().putAll(br.getModel());
+			mav.setViewName("input_itemBox");
+			 List<Game> gameList = this.gameService.getGameList(); 
+			 mav.addObject("gamelist",gameList); //뷰에 box리스트를 삽입, 코드에 따라 box의 이름이 나올 예정
+		   	 mav.addObject(new ItemBox()); //form:form이므로 객체 하나 삽입
+		   	 return mav;
+			
+		}
 		///이미지 파일 업로드 및 DB에 삽입 
 		MultipartFile multipart = box.getImageFile();//선택한 파일을 불러온다.
 		String fileName = null; String path = null; OutputStream os = null;
@@ -204,7 +214,7 @@ public class ItemController {
 		box.setImage(fileName);//업로드 된 파일 이름을 item에 설정
 		
 		this.boxService.putBox(box);
-		ModelAndView mav = new ModelAndView("BoxInputResult");	
+		mav.setViewName("BoxInputResult");	
 		return mav;
 	}
 	
@@ -264,6 +274,8 @@ public class ItemController {
 		Item item = this.itemService.getItemByCode(code);
 		ModelAndView mav = new ModelAndView("itemModifyForm");
 		mav.addObject("item",item);
+		ItemBox box = this.boxService.getBoxByCode(item.getBox_code());
+		mav.addObject("box",box);
 		return mav;
 	}
 	@PostMapping(value = "/item/update.html")
@@ -334,8 +346,17 @@ public class ItemController {
 		 return mav;//리턴
 	}
 	@PostMapping(value = "/item/inputResult.html")
-	public 	ModelAndView inputResult(Item item,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
-		
+	public 	ModelAndView inputResult(@Valid Item item,BindingResult br,HttpSession session) { //입력 폼에서 가져온 item 객체를 받아온다.
+		ModelAndView mav =new ModelAndView();
+		if(br.hasErrors()) {
+			mav.getModel().putAll(br.getModel());
+			mav.setViewName("input_item");
+			 List<ItemBox> boxList= this.boxService.getBoxList(); 
+			 mav.addObject("boxlist",boxList); //뷰에 box리스트를 삽입, 코드에 따라 box의 이름이 나올 예정
+		   	 mav.addObject(new Item()); //form:form이므로 객체 하나 삽입
+			 return mav;//리턴
+			
+		}
 		///이미지 파일 업로드 및 DB에 삽입 
 		MultipartFile multipart = item.getImagefile();//선택한 파일을 불러온다.
 		String fileName = null; String path = null; OutputStream os = null;
@@ -360,7 +381,7 @@ public class ItemController {
 		item.setImage(fileName);//업로드 된 파일 이름을 item에 설정
 		//int maxNum = this.imageDao.getMaxWid() + 1;//글번호 생성
 		this.itemService.inputItem(item);
-		ModelAndView mav = new ModelAndView("ItemInputResult");	
+		 mav.setViewName("ItemInputResult");	
 		return mav;
 	}
 	

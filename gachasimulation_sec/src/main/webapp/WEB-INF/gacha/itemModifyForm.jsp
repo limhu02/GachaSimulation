@@ -125,18 +125,19 @@
     <h3>아이템 정보 (관리자)</h3>
 
     <form:form modelAttribute="item" method="post" action="../item/update.html" enctype="multipart/form-data">
-        <table>
-            <input type="hidden" name="code" value="${item.code}" />
+    		 <input type="hidden" name="code" value="${item.code}" />
             <input type="hidden" name="image" value="${item.image}" />
-
+    
+        <table>
+           
             <tr>
                 <th>아이템</th>
-                <td><form:input path="name" /></td>
+                <td><form:input path="name"/></td>
             </tr>
 
             <tr>
                 <th>소속 게임</th>
-                <td><!-- 데이터 없음 --></td>
+                <td>${box.game}</td>
             </tr>
 
             <tr>

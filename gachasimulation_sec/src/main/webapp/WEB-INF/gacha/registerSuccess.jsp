@@ -73,7 +73,7 @@
     <p>회원가입이 정상적으로 완료되었습니다.</p>
 
     <div class="btn-container">
-        <a href="/login/login.html" class="btn btn-primary">🔑 로그인</a>
+        <a href="/login/loginsec.html" class="btn btn-primary">🔑 로그인</a>
         <a href="/index/index.html" class="btn btn-secondary">🏠 홈으로 이동</a>
     </div>
 </div>

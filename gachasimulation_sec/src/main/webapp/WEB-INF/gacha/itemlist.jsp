@@ -157,13 +157,13 @@
             color: #fff;
             font-weight: bold;
         }
-    </style>
+    </style>l
 </head>
 <body>
 
 <div class="container">
     <a href="${pageContext.request.contextPath}/board/simulation.html" class="game-list-button">게임목록으로 돌아가기</a>
-    <h3>전체 아이템 목록</h3>
+    <h3>${game} 아이템 목록</h3>
 
     <div class="search-form">
         <form action="../item/namesearch.html" method="post">
@@ -213,13 +213,13 @@
             <c:set var="endPage" value="${pageCount}" />
         </c:if>
         <c:if test="${startPage > 10}">
-            <a href="../item/itemList.html?PAGE_NUM=${startPage - 1}">[이전]</a>
+            <a href="../item/itemList.html?PAGE_NUM=${startPage - 1}&game=${game}">[이전]</a>
         </c:if>
         <c:forEach begin="${startPage}" end="${endPage}" var="i">
-            <a href="../item/itemList.html?PAGE_NUM=${i}" class="${currentPage == i ? 'current' : ''}">${i}</a>
+            <a href="../item/itemList.html?PAGE_NUM=${i}&game=${game}" class="${currentPage == i ? 'current' : ''}">${i}</a>
         </c:forEach>
         <c:if test="${endPage < pageCount}">
-            <a href="../item/itemList.html?PAGE_NUM=${endPage + 1}">[다음]</a>
+            <a href="../item/itemList.html?PAGE_NUM=${endPage + 1}&game=${game}">[다음]</a>
         </c:if>
     </div>
 

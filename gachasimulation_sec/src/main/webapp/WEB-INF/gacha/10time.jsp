@@ -33,6 +33,7 @@
 
     <div class="result-buttons">
         <a href="${pageContext.request.contextPath}/gacha/gacha10.html?code=${code}" class="retry-button">다시 뽑기</a>
+        <a href="${pageContext.request.contextPath}/gacha/gacha1.html?code=${code}" class="one-button">1회 뽑기</a>
         <a href="${pageContext.request.contextPath}/gacha/result.html" class="calculate-button">정산하기</a>
     </div>
 

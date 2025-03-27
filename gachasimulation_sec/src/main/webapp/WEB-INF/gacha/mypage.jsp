@@ -128,7 +128,7 @@ body {
                 </c:when>
                 <c:otherwise>
                 	<!-- 이미지 설정하지 전에는 기본 프로필 이미지 출력 -->
-                    <img class="profile-img" src="/images/Default-profile.png" alt="기본 프로필">
+                    <img class="profile-img" src="${pageContext.request.contextPath}/userprofile/Default-Profile.png" alt="기본 프로필">
                 </c:otherwise>
             </c:choose>
         </div>
@@ -155,14 +155,14 @@ body {
         <br/>
 
         <div class="buttons">
-    		<a href="${pageContext.request.contextPath}/mypage/edit" class="edit-btn">개인 정보 수정</a>
+    		<a href="${pageContext.request.contextPath}/mypage/edit.html" class="edit-btn">개인 정보 수정</a>
     		<button class="delete-btn" onclick="confirmDelete()">회원 탈퇴</button>
 		</div>  
 		
 <script>
     function confirmDelete() {
         if (confirm("정말로 탈퇴하시겠습니까? 탈퇴 후 복구할 수 없습니다.")) {
-            window.location.href = "${pageContext.request.contextPath}/mypage/delete";
+            window.location.href = "${pageContext.request.contextPath}/mypage/delete.html";
         }
     }
 </script>

@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +21,8 @@ import gacha.service.AuthService;
 import gacha.service.CommentaryService;
 import gacha.service.MypageService;
 import gacha.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -32,15 +39,16 @@ public class MypageController {
      * 📌 마이페이지 수정 페이지 이동
      * - 로그인한 사용자만 접근 가능
      */
-    @GetMapping("/mypage/edit")
-    public ModelAndView showEditMyPage(HttpSession session) {
+    @GetMapping("/mypage/edit.html")
+    public ModelAndView showEditMyPage(@AuthenticationPrincipal UserDetails userDetails) {
         // 세션에서 로그인한 사용자 ID 가져오기
-        String userId = (String) session.getAttribute("user_id");
+       
 
         // 로그인하지 않은 경우 로그인 페이지로 리디렉트
-        if (userId == null) {
+        if (userDetails == null) {
             return new ModelAndView("redirect:/login/login.html");
         }
+        String userId = userDetails.getUsername();
 
         // 사용자 정보 가져오기
         UserInfo userInfo = mypageService.getUserInfoById(userId);
@@ -57,20 +65,14 @@ public class MypageController {
      * - 이름, 이메일, 프로필 이미지 변경 가능
      * - ID(user_id)는 변경 불가능
      */
-    @PostMapping("/mypage/update")
+    @PostMapping("/mypage/update.html")
     public ModelAndView updateUserInfo(
             @RequestParam("name") String name,
             @RequestParam("email") String email,
             @RequestParam(value = "profile_image", required = false) MultipartFile profileImage,
-            HttpSession session) {
+            @AuthenticationPrincipal UserDetails userDetails,HttpSession session) {
 
-        // 로그인된 사용자 ID 가져오기
-        String userId = (String) session.getAttribute("user_id");
-
-        // 로그인하지 않은 경우 → 로그인 페이지로 이동
-        if (userId == null) {
-            return new ModelAndView("redirect:/login/login.html");
-        }
+       String userId= userDetails.getUsername();
 
         // 기존 사용자 정보 가져오기
         UserInfo existingUser = mypageService.getUserInfoById(userId);
@@ -117,42 +119,39 @@ public class MypageController {
         return new ModelAndView("mypageEditSuccess");
     }
     
-    /**
-     * 📌 회원 탈퇴 처리
-     * - 로그인한 사용자 정보 삭제 후 로그아웃 처리
-     */
-    @GetMapping("/mypage/delete")
-    public ModelAndView deleteUser(HttpSession session) {
-        // 세션에서 로그인한 사용자 ID 가져오기
-        String userId = (String) session.getAttribute("user_id");
-
-        // 로그인 상태가 아니라면 홈으로 리디렉트
-        if (userId == null) {
+    @GetMapping("/mypage/delete.html")
+    public ModelAndView deleteUser(@AuthenticationPrincipal UserDetails userDetails, HttpServletRequest request, HttpServletResponse response) {
+        if (userDetails == null) {
             return new ModelAndView("redirect:/");
         }
-        //사용자가 작성한 댓글 모두 삭제
-        this.commentaryService.deleteCommentaryByWriter(userId);
-        //사용자가 작성한 게시글 모두 삭제
-        this.postService.deletePostByWriter(userId);
-        
-        this.authService.deleteAuthById(userId);
-        
 
-        // 사용자 정보 삭제 실행
+        String userId = userDetails.getUsername();
+
+        // 사용자가 작성한 댓글 삭제
+        this.commentaryService.deleteCommentaryByWriter(userId);
+        // 사용자가 작성한 게시글 삭제
+        this.postService.deletePostByWriter(userId);
+        // 권한 정보 삭제
+        this.authService.deleteAuthById(userId);
+        // 사용자 계정 삭제
         mypageService.deleteUser(userId);
 
-        // 세션 무효화 (로그아웃 처리)
-        session.invalidate();
+        // 🔹 Spring Security에서 로그아웃 처리
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
 
         // 탈퇴 완료 페이지로 이동
-        return new ModelAndView("redirect:/mypage/deleted");
+        return new ModelAndView("redirect:/mypage/deleted.html");
     }
+
 
     /**
      * 📌 회원 탈퇴 완료 페이지
      * - 탈퇴가 정상적으로 완료되었음을 알리는 페이지
      */
-    @GetMapping("/mypage/deleted")
+    @GetMapping("/mypage/deleted.html")
     public ModelAndView showDeletedPage() {
         ModelAndView mav = new ModelAndView("index");
         mav.addObject("BODY", "userDeleted.jsp"); // 탈퇴 완료 메시지 페이지

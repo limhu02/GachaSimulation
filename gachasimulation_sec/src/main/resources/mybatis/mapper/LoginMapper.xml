@@ -3,6 +3,19 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="gacha.mapper.LoginMapper">
 
+	<!-- 📌 계정으로 정보찾기  -->
+	<select id="getUserInfoById" parameterType="String" resultType="gacha.model.UserInfo">
+    	SELECT user_id, name, email, reg_date, profile_image
+   		FROM user_info
+    	WHERE user_id = #{userId}
+	</select>
+	
+	
+	<!-- 📌 비밀번호 변경  -->
+	<update id="updateUserPwd" parameterType="gacha.model.UserInfo">
+	update user_info set user_pwd=#{user_pwd} where user_id=#{user_id}
+	</update>
+	
     <!-- 📌 로그인 사용자 조회 -->
     <select id="getUser" parameterType="gacha.model.LoginUser" 
         resultType="gacha.model.LoginUser">

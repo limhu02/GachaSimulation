@@ -8,7 +8,20 @@ import gacha.model.UserInfo;
 
 @Mapper
 public interface LoginMapper {
-
+	/**
+	   * 📌 사용자 정보 확인
+	   *
+	   * @param 사용자 ID
+	   * @return ID로 찾은 사용자 정보
+	   */
+  UserInfo getUserInfoById(String id);
+  /**
+   * 📌 비밀번호 변경
+   *
+   * @param 사용자 정보
+   * @return 변경 실행
+   */
+  void updateUserPwd(UserInfo userInfo);
    /**
     * 📌 로그인 사용자 조회
     * - 입력된 사용자 정보로 로그인 검증

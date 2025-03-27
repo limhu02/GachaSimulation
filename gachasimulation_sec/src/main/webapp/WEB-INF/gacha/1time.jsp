@@ -91,6 +91,17 @@
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(40, 167, 69, 0.5);
         }
+        
+         /* ✅ 10회 뽑기 버튼 */
+       .btn-10 {
+    		background: linear-gradient(135deg, #fd7e14, #e56b00); /* 주황색 그라데이션 */
+		}
+
+		.btn-10:hover {
+    		transform: scale(1.05);
+    		box-shadow: 0 6px 12px rgba(255, 165, 0, 0.5); /* 주황색 그림자 */
+		}
+       
 
         /* ✅ 다시 뽑기 버튼 */
         .btn-retry {
@@ -125,7 +136,7 @@
 </head>
 <body>
 
-    <h2>10회 뽑기 결과</h2>
+    <h2>1회 뽑기 결과</h2>
 
     <div class="result-container">
         <div class="item-box">
@@ -138,6 +149,7 @@
     <!-- ✅ 버튼 영역 -->
     <div class="button-container">
         <a href="../gacha/gacha1.html?code=${code}" class="btn btn-retry">다시 뽑기</a>
+        <a href="${pageContext.request.contextPath}/gacha/gacha10.html?code=${code}" class="btn btn-10">10회 뽑기</a>
         <a href="../gacha/result.html" class="btn btn-calculate">정산하기</a>
     </div>
 

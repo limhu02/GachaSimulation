@@ -14,6 +14,7 @@ import gacha.model.Game;
 import gacha.model.Post;
 import gacha.model.PostList;
 import gacha.model.UserInfo;
+import gacha.service.AuthService;
 import gacha.service.BoxService;
 import gacha.service.GameService;
 import gacha.service.MypageService;
@@ -31,15 +32,18 @@ public class BoardController {
     private MypageService mypageService;
     @Autowired
     private GameService gameService;
-    
+    @Autowired
+    private AuthService authService;
     
 
     @GetMapping("/board/userDetail.html")
     public ModelAndView userDetail(String user_id) {
     	ModelAndView mav= new ModelAndView("index");
     	UserInfo user = this.mypageService.getUserInfoById(user_id);
+    	String auth = this.authService.getAuthById(user_id);
     	mav.addObject("BODY","userDetail.jsp");
     	mav.addObject("userInfo",user);
+    	mav.addObject("auth",auth);
     	return mav;
     	
     }
