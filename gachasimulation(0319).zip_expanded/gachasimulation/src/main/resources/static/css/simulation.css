@@ -1,0 +1,48 @@
+/* ✅ 전체 레이아웃 스타일 */
+.container {
+    text-align: center;
+    margin-top: 20px; /* 상단 여백 추가 */
+}
+
+/* ✅ 타이틀 스타일 */
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333; /* 적절한 색상 적용 */
+}
+
+/* ✅ 가챠 박스 스타일 */
+.square-box {
+    aspect-ratio: 1 / 1;
+    background-color: #bfdbfe; /* bg-blue-200 */
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+    transition: background-color 0.3s;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: black;
+}
+
+/* ✅ 가챠 박스 호버 효과 */
+.square-box:hover {
+    background-color: #93c5fd; /* 더 밝은 블루 */
+}
+
+/* ✅ 가챠 박스 컨테이너 (2x2 레이아웃) */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2x2 배치 */
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    padding: 2rem;
+    max-width: 500px; /* 컨테이너 크기 조절 */
+}
+

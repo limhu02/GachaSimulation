@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gacha.mapper.AdminMapper">
+	
+	 <select id="getCountSearchUserById" parameterType="String" resultType="Integer">
+    
+            SELECT count(*) 
+            FROM user_info
+            WHERE LOWER(user_id) LIKE '%' || LOWER(#{searchKeyword}) || '%' 
+            ORDER BY reg_date DESC
+     
+</select>
+	
+	  <select id="searchUserById" parameterType="gacha.model.StartEnd" resultType="gacha.model.UserInfo">
+    SELECT user_id, name, email, reg_date, profile_image
+    FROM (
+        SELECT rownum AS rn, a.*
+        FROM (
+            SELECT user_id, name, email, reg_date, profile_image 
+            FROM user_info
+            WHERE LOWER(user_id) LIKE '%' || LOWER(#{searchKeyword}) || '%' 
+            ORDER BY reg_date DESC
+        ) a
+    )
+    WHERE rn <![CDATA[>=]]> #{start} AND rn <![CDATA[<=]]> #{end}
+</select>
+
+	<delete id="deleteUser" parameterType="String">
+        DELETE FROM user_info WHERE user_id = #{userId}
+    </delete>
+	
+	<select id="getTotaUserlCount" resultType="Integer">
+	select count(*) from user_info
+	</select>
+
+	<select id="getUserList" parameterType="gacha.model.StartEnd" resultType="gacha.model.UserInfo">
+		select user_id, name, email, reg_date, profile_image
+	from( select rownum rn, a.*
+	        from (select user_id, name, email, reg_date, profile_image from user_info) a
+	       )
+	where rn > #{start} and rn <![CDATA[<]]> #{end}
+    	
+	</select>
+	
+	<select id="getUserInfoById" parameterType="String" resultType="gacha.model.UserInfo">
+    	SELECT user_id, name, email, reg_date, profile_image
+   		FROM user_info
+    	WHERE user_id = #{userId}
+	</select>
+	
+	
+	<update id="updateUserInfo" parameterType="gacha.model.UserInfo">
+    	UPDATE user_info
+    	SET name = #{name},
+        	email = #{email},
+        	profile_image = #{profile_image, jdbcType=VARCHAR}
+    	WHERE user_id = #{user_id}
+	</update>
+</mapper>
+
+
+
+

@@ -1,0 +1,10 @@
+@charset "EUC-KR";
+body {font-family: '±¼¸²Ã¼'; }
+div.body {margin-top: 50px; margin-bottom: 50px;}
+tr.header {background-color: lightblue;}
+tr.record {background-color: lightgreen;}
+input.userId {height: 20px; widows: 150px;
+	border-width: 2px; border-style: solid;}
+input.password {height: 20px; widows: 150px; 
+	border-width: 2px; border-style: solid;}
+	

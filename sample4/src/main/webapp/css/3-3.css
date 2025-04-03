@@ -1,0 +1,5 @@
+@charset "EUC-KR";
+body {font-family: '±¼¸²Ã¼';}
+div.body {margin-top: 50px; margin-bottom: 50px;}
+tr.header {background-color: lightblue;}
+tr.record {background-color: lightgreen;}

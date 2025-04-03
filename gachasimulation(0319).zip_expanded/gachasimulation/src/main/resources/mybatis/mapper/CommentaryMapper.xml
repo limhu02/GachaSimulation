@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gacha.mapper.CommentaryMapper">
+	<delete id="deleteCommentaryByWriter" parameterType="String">
+		delete from commentary where writer=#{writer}
+	</delete>
+	<delete id="deleteCommentaryByPostId" parameterType="Integer">
+			delete from commentary where post_id=#{post_id}
+	</delete>
+	<delete id="deleteCommentaryByCode" parameterType="Integer">
+		delete from commentary where code=#{code}
+	</delete>
+	
+
+
+
+	<update id="updateCommentary" parameterType="gacha.model.Commentary">
+	update commentary set content=#{content},write_date=sysdate where code=#{code}
+	</update>
+	<select id="getCommentaryByCode" parameterType="Integer" resultType="gacha.model.Commentary">
+	select code,writer,content,post_id from commentary where code=#{code}
+	</select>
+	<select id="getCommentListByPost" parameterType="Integer" resultType="gacha.model.Commentary">
+	select code,post_id,content,writer,write_date from commentary where post_id=#{post_id} order by write_date desc 
+	</select>
+    <!-- 📌 전체 댓글 갯수 리턴, code 갱신 예정 -->
+	<select id="getCommentaryMax" resultType="Integer">
+	select count(*) from commentary
+	</select>
+    <!-- 📌 댓글 작성 정보 입력 -->
+    <insert id="putComment" parameterType="gacha.model.Commentary">
+        INSERT INTO commentary VALUES (#{code}, #{post_id}, #{writer},#{content}, SYSDATE)
+    </insert>
+    
+</mapper>
